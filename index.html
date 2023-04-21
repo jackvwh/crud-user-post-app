@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>JACK CRUD APP</title>
+</head>
+<body>
+
+    <header>
+        <h1>CRUD APPLICATION</h1>
+    </header>
+
+    <main>
+
+        <section id="create-btns"></section>
+
+        <nav>
+            <input type="button" name="posts" id="posts-btn" value="POSTS">
+            <input type="button" name="users" id="users-btn" value="USERS">
+        </nav>
+
+        <section id="items" class="grid-container"></section>
+
+             <!--POST CREATE DIALOG  -->
+        <dialog id="post-create-dialog">
+            <form id="post-create-form">
+                <label for="post-title"></label>
+                <input type="text" name="title" id="post-title" placeholder="Type a titel" value="lorem ipsum">
+
+                <label for="post-body"></label>
+                <input type="text" name="body" id="post-body" placeholder="Type something clever" value="this is the body">
+
+                <label for="post-image"></label>
+                <input type="text" name="image" id="post-image" placeholder="Paste image link" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400">
+
+                <input type="submit" id="post-create-form-btn"  value="Create Post">
+            </form>
+            <form method="dialog">
+                <button>Close</button>
+            </form>
+        </dialog>
+         <!-- USER CREATE FORM -->
+         <dialog id="user-create-dialog">
+            <form id="user-create-form">
+                
+                <label for="user-name"></label>
+                <input type="text" name="name" id="user-name" placeholder="Name" value="Bernie Sanders">
+
+                <label for="user-title"></label>
+                <input type="text" name="title" id="user-title" placeholder="Titel" value="President">
+
+                <label for="user-image"></label>
+                <input type="text" name="image" id="user-image" placeholder="Image" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400">
+
+                <label for="user-mail"></label>
+                <input type="text" name="mail" id="user-mail" placeholder="Mail" value="president@myhouse.com">
+
+                <label for="user-phone"></label>
+                <input type="text" name="phone" id="user-phone" placeholder="phone" value="numbers, not a string">
+
+                <input type="submit" id="user-create-form-btn"  value="Create User">
+            </form>
+            <form method="dialog">
+                <button>Close</button>
+            </form>
+        </dialog>
+             <!--POST UPDATE DIALOG  -->
+        <dialog id="post-update-dialog">
+            <form id="post-update-form">
+                <label for="post-title"></label>
+                <input type="text" name="title" id="post-title" placeholder="Type a titel" value="lorem ipsum">
+
+                <label for="post-body"></label>
+                <input type="text" name="body" id="post-body" placeholder="Type something clever" value="this is the body">
+
+                <label for="post-image"></label>
+                <input type="text" name="image" id="post-image" placeholder="Paste image link" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400">
+
+                <input type="submit" id="post-update-form-btn"  value="Update Post">
+            </form>
+            <form method="dialog">
+                <button>Close</button>
+            </form>
+        </dialog>
+        <!-- USER UPDATE FORM --> 
+        <dialog id="user-update-dialog">
+            <form id="user-update-form">
+                
+                <label for="user-name"></label>
+                <input type="text" name="name" id="user-name" placeholder="Name" value="Bernie Sanders">
+
+                <label for="user-title"></label>
+                <input type="text" name="title" id="user-title" placeholder="Titel" value="President">
+
+                <label for="user-image"></label>
+                <input type="text" name="image" id="user-image" placeholder="Image" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400">
+
+                <label for="user-mail"></label>
+                <input type="text" name="mail" id="user-mail" placeholder="Mail" value="president@myhouse.com">
+
+                <label for="user-phone"></label>
+                <input type="text" name="phone" id="user-phone" placeholder="phone" value="numbers, not a string">
+
+                <input type="submit" id="user-update-form-btn"  value="Update User">
+            </form>
+            <form method="dialog">
+                <button>Close</button>
+            </form>
+        </dialog>
+    </main>
+
+   
+
+    <script src="script.js"></script>
+</body>
+</html>
