@@ -15,8 +15,8 @@
 
     <main>   
         <nav id="nav-btns">
-            <button id="posts-btn" class="post-btn">SHOW POSTS</button>
-            <button id="users-btn" class="user-btn">SHOW USERS</button>
+            <button id="posts-btn" class="post-btn">SHOW ALL POSTS</button>
+            <button id="users-btn" class="user-btn">SHOW ALL USERS</button>
         </nav>
 
          <!-- create btn section  -->
@@ -28,14 +28,14 @@
         <!--POST CREATE DIALOG  -->
         <dialog id="post-create-dialog">
             <form id="post-create-form">
-                <label for="post-title"></label>
-                <input type="text" name="title" id="post-title" placeholder="Type a titel" value="Den lede ost" required>
+                <label for="post-title">Title</label>
+                <input type="text" name="title" id="post-title" maxlength="1000" placeholder="Type a titel" value="Den lede ost" required>
 
-                <label for="post-body"></label>
-                <input type="text" name="body" id="post-body" placeholder="Type something clever" value="fede må svede" required>
+                <label for="post-body">Text</label>
+                <input type="text" name="body" id="post-body" maxlength="1000" placeholder="Type something clever" value="fede må svede" required>
 
-                <label for="post-image"></label>
-                <input type="text" name="image" id="post-image" placeholder="Paste image link" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400" required>
+                <label for="post-image">Image</label>
+                <input type="text" name="image" id="post-image" maxlength="1000" placeholder="Paste image link" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400" required>
 
                 <button id="post-create-form-btn">Create Post</button>
             </form>
@@ -46,20 +46,20 @@
          <!-- USER CREATE FORM -->
         <dialog id="user-create-dialog">
             <form id="user-create-form">
-                <label for="user-name"></label>
-                <input type="text" name="name" id="user-name" placeholder="Name" value="Bernie Sanders" required>
+                <label for="user-name">Name</label>
+                <input type="text" name="name" id="user-name" maxlength="1000" placeholder="Name" value="Bernie Sanders" required>
 
-                <label for="user-title"></label>
-                <input type="text" name="title" id="user-title" placeholder="Titel" value="President" required>
+                <label for="user-title">Title</label>
+                <input type="text" name="title" id="user-title" maxlength="1000" placeholder="Titel" value="President" required>
 
-                <label for="user-image"></label>
-                <input type="text" name="image" id="user-image" placeholder="Image" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400" required>
+                <label for="user-image">Image</label>
+                <input type="text" name="image" id="user-image" maxlength="1000" placeholder="Image" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400" required>
 
-                <label for="user-mail"></label>
-                <input type="text" name="mail" id="user-mail" placeholder="Mail" value="president@myhouse.com" required>
+                <label for="user-mail">Mail</label>
+                <input type="text" name="mail" id="user-mail" maxlength="1000" placeholder="Mail" value="president@myhouse.com" required>
 
-                <label for="user-phone"></label>
-                <input type="text" name="phone" id="user-phone" placeholder="phone" value="numbers, not a string" required>
+                <label for="user-phone">Phone</label>
+                <input type="text" name="phone" id="user-phone" maxlength="1000" placeholder="phone" value="numbers, not a string" required>
 
                 <button id="user-create-form-btn">Create User</button>
             </form>
@@ -70,14 +70,14 @@
         <!--POST UPDATE DIALOG  -->
         <dialog id="post-update-dialog">
             <form id="post-update-form">
-                <label for="post-title"></label>
-                <input type="text" name="title" id="post-title" placeholder="Type a titel" value="lorem ipsum" required>
+                <label for="post-title">Title</label>
+                <input type="text" name="title" id="post-title" maxlength="1000" placeholder="Type a titel" value="lorem ipsum" required>
 
-                <label for="post-body"></label>
-                <input type="text" name="body" id="post-body" placeholder="Type something clever" value="this is the body" required>
+                <label for="post-body">Text</label>
+                <input type="text" name="body" id="post-body" maxlength="1000" placeholder="Type something clever" value="this is the body" required>
 
-                <label for="post-image"></label>
-                <input type="text" name="image" id="post-image" placeholder="Paste image link" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400" required>
+                <label for="post-image">Image</label>
+                <input type="text" name="image" id="post-image" maxlength="1000" placeholder="Paste image link" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400" required>
 
                 <button id="post-update-form-btn">Update Post</button>
             </form>
@@ -88,20 +88,20 @@
         <!-- USER UPDATE FORM --> 
         <dialog id="user-update-dialog">
             <form id="user-update-form">
-                <label for="user-name"></label>
-                <input type="text" name="name" id="user-name" placeholder="Name" value="Bernie Sanders" required>
+                <label for="user-name">Name</label>
+                <input type="text" name="name" id="user-name" maxlength="1000" placeholder="Name" value="Bernie Sanders" required>
 
-                <label for="user-title"></label>
-                <input type="text" name="title" id="user-title" placeholder="Titel" value="President" required>
+                <label for="user-title">Title</label>
+                <input type="text" name="title" id="user-title" maxlength="1000" placeholder="Titel" value="President" required>
 
-                <label for="user-image"></label>
-                <input type="text" name="image" id="user-image" placeholder="Image" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400" required>
+                <label for="user-image">Image</label>
+                <input type="text" name="image" id="user-image" maxlength="1000" placeholder="Image" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400" required>
 
-                <label for="user-mail"></label>
-                <input type="text" name="mail" id="user-mail" placeholder="Mail" value="president@myhouse.com" required>
+                <label for="user-mail">Mail</label>
+                <input type="text" name="mail" id="user-mail" maxlength="1000" placeholder="Mail" value="president@myhouse.com" required>
 
-                <label for="user-phone"></label>
-                <input type="text" name="phone" id="user-phone" placeholder="phone" value="numbers, not a string" required>
+                <label for="user-phone">Phone</label>
+                <input type="text" name="phone" id="user-phone" maxlength="1000" placeholder="phone" value="numbers, not a string" required>
 
                 <button id="user-update-form-btn">Update User</button>
             </form>
@@ -110,9 +110,6 @@
             </form>
         </dialog>
     </main>
-
-   
-
     <script src="script.js"></script>
 </body>
 </html>

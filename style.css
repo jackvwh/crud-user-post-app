@@ -84,12 +84,19 @@ main {
     height: 300px;
     object-fit: cover;
 }
-/* input form stryling */
+/* input form and dialog stryling */
+dialog {
+    border-color: red;
+    background-color: rgb(141, 10, 158);
+    width: 65vw;
+    padding: 2em 1em;
+}
 form {
     margin: 2em auto 0;
-    background-color: rgb(52, 158, 10);
+    background-color: rgb(141, 10, 158);
     padding: 1em 1em 2em;
     text-align: center;
+    width: 100%;
 }
 button {
     font-weight: 300;

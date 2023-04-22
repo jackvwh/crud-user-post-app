@@ -3,6 +3,10 @@
 /*
     ------ TODO ------
 
+    fix eventListner RUINING my hide/reveal function
+
+    implement search function - name, titel, mail, phone 
+
     fix update close btn still calls updateData when clicked and then click update on another item. very strange
 
     fix that update btn dont have correct eventListener after clicking update, every earlier element is updated when new elements is updated, they end up acting as one??
@@ -73,7 +77,7 @@ function user_createDialog(){
 // insert post-create-button
 function post_Create_Btn(){
     const button = /*HTML*/ `
-    <button id="post-create-btn" class="post-btn">Create Post</button>
+    <button id="post-create-btn" class="post-btn">NEW Post</button>
     `;
     document.querySelector("#create-btns").insertAdjacentHTML("beforeend", button);
     document.querySelector("#post-create-btn").addEventListener("click", post_createDialog);
@@ -81,7 +85,7 @@ function post_Create_Btn(){
 // insert user-create-button
 function user_Create_Btn(){
     const button = /*HTML*/ `
-    <button id="user-create-btn" class="user-btn">Create User</button>
+    <button id="user-create-btn" class="user-btn">NEW User</button>
     `;
     document.querySelector("#create-btns").insertAdjacentHTML("beforeend", button);
     document.querySelector("#user-create-btn").addEventListener("click", user_createDialog);
@@ -157,6 +161,7 @@ function makeHTMLpost(dataItem){
                 <h1 class="body">${dataItem.body}</h1>
                 <button class="update-btn">Update Post</button>
                 <button class="delete-btn">Delete Post</button>
+                <button class="hide-btn">Hide Post</button>
         </article>
     `;
     return html;
@@ -173,6 +178,7 @@ function makeHTMLuser(dataItem){
                 <h1 class="user_phone">${dataItem.phone}</h1>
                 <button class="update-btn">Update User</button>
                 <button class="delete-btn">Delete User</button>
+                <button class="hide-btn">Hide User</button>
         </article>
     `;
     return html;
@@ -186,14 +192,14 @@ function displayItem(dataItem, type){
             document.querySelector("#items").insertAdjacentHTML("afterbegin", html);
             // add eventListener to update btn
             document.querySelector("#items article:first-child .update-btn").addEventListener("click", post_updateDialog);
-            document.querySelector("#items article:first-child").addEventListener("click", hide_item);
+            document.querySelector("#items article:first-child .hide-btn").addEventListener("click", hide_item);
         }
         else if (type === "users"){
              const html = makeHTMLuser(dataItem);
              document.querySelector("#items").insertAdjacentHTML("afterbegin", html);
              // add eventListener to update btn dialog and hide function
             document.querySelector("#items article:first-child .update-btn").addEventListener("click", user_updateDialog);
-            document.querySelector("#items article:first-child").addEventListener("click", hide_item);
+            document.querySelector("#items article:first-child .hide-btn").addEventListener("click", hide_item);
         };
         // add eventListener to delete btn
         document.querySelector("#items article:first-child .delete-btn").addEventListener("click", deleteClicked);
@@ -430,24 +436,27 @@ async function deleteData(id, type) {
     }
 }
 function hide_item(){
-    // get item childen elements
-    const elements = this.children;
+    // get item children elements
+    const elements = this.parentElement.children;
+    console.log(elements, this.parentElement);
     //add hidden class to all childen elements
     for (let i = 0; i < elements.length; i++){
         elements[i].classList.add("hidden");
     }
-    // remove eventListener and add new to reveal_item
-    this.removeEventListener("click", hide_item);
-    this.addEventListener("click", reveal_item);
+    // remove eventListener from hide btn
+    // this.removeEventListener("click", hide_item);
+    // add eventListner to parentElement to reveal item
+    // this.parentElement.addEventListener("click", reveal_item);
 }
 function reveal_item(){
-    // get item childen elements
+    // get item children elements
     const elements = this.children;
     //add hidden class to all childen elements
     for (let i = 0; i < elements.length; i++){
         elements[i].classList.remove("hidden");
     }
-    // remove eventListener and add hide_item again
-    this.removeEventListener("click", reveal_item);
-    this.addEventListener("click", hide_item);
+     // remove eventListener from hide btn
+    //  this.removeEventListener("click", reveal_item);
+     // add eventListner to parentElement to reveal item
+    //  this.children[5].addEventListener("click", hide_item);
 }
