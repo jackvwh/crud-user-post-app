@@ -200,12 +200,18 @@ function displayItem(dataItem, type){
         document.querySelector("#items article:first-child .delete-btn").addEventListener("click", deleteClicked);
     
     function deleteClicked(){
-        console.log("deleting item");
-        // delete item from database
-        deleteData(dataItem.id, type);
-         // remove deleted element from DOM
-         const element = this;
-         element.parentElement.remove();
+        //confirm delete before deleting 
+        if(confirm("Are you sure? This action is irreversible")){
+                // delete item from database
+            deleteData(dataItem.id, type);
+            // remove deleted element from DOM
+            const element = this;
+            element.parentElement.remove();
+        }
+        else{
+            alert("pussy"); // haha
+        }
+       
     }
     function user_updateDialog(){
         // get HTML nodes to replace
@@ -417,9 +423,10 @@ async function deleteData(id, type) {
     const response = await fetch(url, { method: "DELETE" });
     if (response.ok){
         console.log("Item was succefully deleted");
-        //make message prompt
+        alert("ITEM WAS SUCCESFULLY DELETED");
     }
     else if(!response.ok){
         // show error message and reload page
+        alert("ERROR: error deleting ITEM")
     }
 }
