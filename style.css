@@ -1,6 +1,40 @@
+
+html {
+    color: purple;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    height: 100%;
+    width: 100%;
+}
 body {
-    background-color: rgb(208, 109, 22);
-    color: blue;
+    margin: 0;
+}
+h1 {
+    font-size: 2em;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    text-align: center;
+}
+img {
+    width: 100%;
+    height: auto;
+}
+/* ---------- topbar styling ---------- */
+header {
+    background-color: rgb(4, 4, 54);
+    color: rgb(52, 158, 10);
+    padding: 13.5px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+}
+/* ---------- page styling ---------- */
+main {
+    /*min heigh is screen heigh minus height of tab and top bar */
+    min-height: calc(100vh - 110px);
+    background: rgb(121, 22, 83);
+    padding: 108px 0 0;
 }
 
 /* ---------- grid container styling ---------- */
@@ -35,16 +69,14 @@ body {
 /* ---------- grid item styling ---------- */
 
 .grid-item {
-    box-shadow: 1px 1px 8px rgba(248, 7, 140, 0.938);
+    box-shadow: 3px 1px 8px rgb(52, 158, 10);
     padding: 1.5em;
-    /* background-color: var(--white); */
-    /* transition: 0.5s; */
-    /* animation: fadeIn 0.5s; */
+    background-color: rgb(250, 250, 252);
     cursor: pointer;
 }
 
 .grid-item:hover {
-    box-shadow: 0 8px 16px 0 var(--green);
+    box-shadow: 20px 8px 16px 0 yellowgreen;
 }
 
 .grid-item img {
@@ -52,4 +84,34 @@ body {
     height: 300px;
     object-fit: cover;
 }
-
+/* input form stryling */
+form {
+    margin: 2em auto 0;
+    background-color: rgb(52, 158, 10);
+    padding: 1em 1em 2em;
+    text-align: center;
+}
+button {
+    font-weight: 300;
+    font-size: 1em;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    border-radius: 0;
+    color: lightcoral;
+    background-color: rgb(12, 12, 95);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.5em 1em;
+    width: 100%;
+    max-width: 380px;
+}
+input {
+    margin: 1em auto;
+    width: 100%;
+    max-width: 350px;
+    padding: 1em;
+    border: 2px solid rgb(25, 39, 4);
+    display: block;
+    background: white;
+}
