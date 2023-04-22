@@ -1,11 +1,10 @@
 "use strict"
 
 /*
-    fix update close btn still calling updateData when clicked and then updated another item. very strange
+    ------ TODO ------
+    fix update close btn still calls updateData when clicked and then click update on another item. very strange
 
-    fix create post and create user btn not being removed when the other is called. maybe just a hidden class instead
-
-    fix that update btn dont keep having same eventListener after clicking, every update clicked gets the same eventListener??
+    fix that update btn dont have correct eventListener after clicking update, every earlier element is updated when new elements is updated, they end up acting as one??
 
     implement validation
 
