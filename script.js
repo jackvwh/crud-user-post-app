@@ -2,9 +2,6 @@
 
 /*
     ------ TODO ------
-    implement feedback message for user with update, delete and create
-
-    find solution for updateData NOT replacing nodes if !response.ok --- FOUND: reload page if error IMPLEMENT
 
     fix update close btn still calls updateData when clicked and then click update on another item. very strange
 
@@ -155,11 +152,11 @@ function prepareDataArray(dataObject){
 function makeHTMLpost(dataItem){
     const html = /*HTML*/ `
         <article class="grid-item">
-            <h1 class="title">${dataItem.title}</h1>
-            <img class="image" src="${dataItem.image}">
-            <h1 class="body">${dataItem.body}</h1>
-            <button class="update-btn">Update Post</button>
-            <button class="delete-btn">Delete Post</button>
+                <h1 class="title">${dataItem.title}</h1>
+                <img class="image" src="${dataItem.image}">
+                <h1 class="body">${dataItem.body}</h1>
+                <button class="update-btn">Update Post</button>
+                <button class="delete-btn">Delete Post</button>
         </article>
     `;
     return html;
@@ -169,13 +166,13 @@ function makeHTMLuser(dataItem){
     //make for users object
     const html = /*HTML*/ `
         <article class="grid-item">
-            <img class="image" src="${dataItem.image}">
-            <h1 class="user_name">${dataItem.name}</h1>
-            <h1 class="user_title">${dataItem.title}</h1>
-            <h1 class="user_mail">${dataItem.mail}</h1>
-            <h1 class="user_phone">${dataItem.phone}</h1>
-            <button class="update-btn">Update User</button>
-            <button class="delete-btn">Delete User</button>
+                <img class="image" src="${dataItem.image}">
+                <h1 class="user_name">${dataItem.name}</h1>
+                <h1 class="user_title">${dataItem.title}</h1>
+                <h1 class="user_mail">${dataItem.mail}</h1>
+                <h1 class="user_phone">${dataItem.phone}</h1>
+                <button class="update-btn">Update User</button>
+                <button class="delete-btn">Delete User</button>
         </article>
     `;
     return html;
@@ -189,12 +186,14 @@ function displayItem(dataItem, type){
             document.querySelector("#items").insertAdjacentHTML("afterbegin", html);
             // add eventListener to update btn
             document.querySelector("#items article:first-child .update-btn").addEventListener("click", post_updateDialog);
+            document.querySelector("#items article:first-child").addEventListener("click", hide_item);
         }
         else if (type === "users"){
              const html = makeHTMLuser(dataItem);
              document.querySelector("#items").insertAdjacentHTML("afterbegin", html);
-             // add eventListener to update btn
+             // add eventListener to update btn dialog and hide function
             document.querySelector("#items article:first-child .update-btn").addEventListener("click", user_updateDialog);
+            document.querySelector("#items article:first-child").addEventListener("click", hide_item);
         };
         // add eventListener to delete btn
         document.querySelector("#items article:first-child .delete-btn").addEventListener("click", deleteClicked);
@@ -209,9 +208,9 @@ function displayItem(dataItem, type){
             element.parentElement.remove();
         }
         else{
-            alert("pussy"); // haha
-        }
-       
+            //troll user
+            alert("pussy"); 
+        }    
     }
     function user_updateDialog(){
         // get HTML nodes to replace
@@ -429,4 +428,26 @@ async function deleteData(id, type) {
         // show error message and reload page
         alert("ERROR: error deleting ITEM")
     }
+}
+function hide_item(){
+    // get item childen elements
+    const elements = this.children;
+    //add hidden class to all childen elements
+    for (let i = 0; i < elements.length; i++){
+        elements[i].classList.add("hidden");
+    }
+    // remove eventListener and add new to reveal_item
+    this.removeEventListener("click", hide_item);
+    this.addEventListener("click", reveal_item);
+}
+function reveal_item(){
+    // get item childen elements
+    const elements = this.children;
+    //add hidden class to all childen elements
+    for (let i = 0; i < elements.length; i++){
+        elements[i].classList.remove("hidden");
+    }
+    // remove eventListener and add hide_item again
+    this.removeEventListener("click", reveal_item);
+    this.addEventListener("click", hide_item);
 }
