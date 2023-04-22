@@ -21,7 +21,7 @@ img {
 /* ---------- topbar styling ---------- */
 header {
     background-color: rgb(4, 4, 54);
-    color: rgb(52, 158, 10);
+    color: rgb(167, 235, 140);
     padding: 13.5px;
     position: fixed;
     top: 0;
@@ -96,8 +96,7 @@ button {
     font-size: 1em;
     text-align: center;
     cursor: pointer;
-    border: none;
-    border-radius: 0;
+    border-radius: 9px;
     color: lightcoral;
     background-color: rgb(12, 12, 95);
     letter-spacing: 0.05em;
@@ -114,4 +113,12 @@ input {
     border: 2px solid rgb(25, 39, 4);
     display: block;
     background: white;
+}
+.post-btn {
+    background-color: rgb(6, 94, 94);
+    color: rgb(167, 235, 140);
+}
+.user-btn {
+    background-color: brown;
+    color: black; 
 }

@@ -2,6 +2,10 @@
 
 /*
     ------ TODO ------
+    implement feedback message for user with update, delete and create
+
+    find solution for updateData NOT replacing nodes if !response.ok
+
     fix update close btn still calls updateData when clicked and then click update on another item. very strange
 
     fix that update btn dont have correct eventListener after clicking update, every earlier element is updated when new elements is updated, they end up acting as one??
@@ -31,7 +35,7 @@ async function loopData(type){
     const dataArray = await loadData(type);
     //empty grid-container
     document.querySelector("#items").innerHTML = "";
-    console.log("looping data");
+    // iterate array and show items
     for (let dataItem of dataArray) {
         displayItem(dataItem, type);
     }
@@ -62,17 +66,17 @@ function change_create_btn(type){
 // open POST create dialog
 function post_createDialog(){
     document.querySelector("#post-create-dialog").showModal();
-    document.querySelector("#post-create-form").addEventListener("submit", createData);
+    document.querySelector("#post-create-form").addEventListener("submit", createItem);
 }
 // opens USER create dialog
 function user_createDialog(){
     document.querySelector("#user-create-dialog").showModal();
-    document.querySelector("#user-create-form").addEventListener("submit", createData);
+    document.querySelector("#user-create-form").addEventListener("submit", createItem);
 }
 // insert post-create-button
 function post_Create_Btn(){
     const button = /*HTML*/ `
-    <button id="post-create-btn" class="create-btn">Create Post</button>
+    <button id="post-create-btn" class="post-btn">Create Post</button>
     `;
     document.querySelector("#create-btns").insertAdjacentHTML("beforeend", button);
     document.querySelector("#post-create-btn").addEventListener("click", post_createDialog);
@@ -80,13 +84,13 @@ function post_Create_Btn(){
 // insert user-create-button
 function user_Create_Btn(){
     const button = /*HTML*/ `
-    <button id="user-create-btn" class="create-btn">Create User</button>
+    <button id="user-create-btn" class="user-btn">Create User</button>
     `;
     document.querySelector("#create-btns").insertAdjacentHTML("beforeend", button);
     document.querySelector("#user-create-btn").addEventListener("click", user_createDialog);
 }
-// create data object and fetch to firebase
-function createData(event){
+// create item object and fetch to firebase
+function createItem(event){
     event.preventDefault();
     const element = this;
         // decide what to create and send
@@ -126,7 +130,7 @@ function createData(event){
 //fetch and insert new item
 async function insertNewItem(id, type){
     console.log("inserting new item");
-    const newItem = await fetchNewOrUpdatedItem(id, type);
+    const newItem = await fetchItem(id, type);
     displayItem(newItem, type);
 }
 // fetch with async/await
@@ -176,7 +180,7 @@ function makeHTMLuser(dataItem){
     `;
     return html;
 }
-// display single item - add eventListener - controls delete fnc and update fnc
+// display single item - add eventListener - deleteClicked, user_updateDialog, post_updateDialog, updateSubmit functions
 function displayItem(dataItem, type){
     // check for what HTML element to create and insert
         if (type === "posts"){
@@ -206,7 +210,6 @@ function displayItem(dataItem, type){
     function user_updateDialog(){
         // get HTML nodes to replace
         const oldNodes = this.parentElement.childNodes;
-        console.log("old nodes. ", oldNodes);
         //open modal
         document.querySelector("#user-update-dialog").showModal();
         // add eventlistner to submit form 
@@ -226,35 +229,6 @@ function displayItem(dataItem, type){
         event.preventDefault();
         updateData(dataItem.id, type);
     }
-}
-// replace old post nodes to updated post values 
-function replaceOldNodes_Post(oldNodes){
-    console.log("Replacing old POST nodes");
-    // get form inputs values
-    const elements = document.querySelector("#post-update-form");
-    // change specific old nodes to updated values
-    oldNodes[1].innerHTML = elements.title.value;
-    oldNodes[3].src = elements.image.value;
-    oldNodes[5].innerHTML = elements.body.value;  
-}
-// replace old user nodes to updated user values 
-function replaceOldNodes_User(oldNodes){
-    console.log("Replacing old USER nodes");
-    // get form inputs values
-    const elements = document.querySelector("#user-update-form");
-    // change specific old nodes to updated values
-    oldNodes[1].src = elements.image.value;
-    oldNodes[3].innerHTML = elements.title.value;
-    oldNodes[5].innerHTML = elements.name.value;  
-    oldNodes[7].innerHTML = elements.mail.value;  
-    oldNodes[9].innerHTML = elements.mail.value;  
-}
-// fetch single item from database
-async function fetchNewOrUpdatedItem(id, type){
-    //get updated or new item from database
-    const response =  await fetch(`${endpoint}/${type}/${id}.json`);
-    const updatedData = await response.json();
-    return updatedData;
 }
 // update data
 async function updateData(id, type){
@@ -290,6 +264,35 @@ async function updateData(id, type){
         post_PUT(title, body , image, id);
     }
 }
+// replace old post nodes to updated post values 
+function replaceOldNodes_Post(oldNodes){
+    console.log("Replacing old POST nodes");
+    // get form inputs values
+    const elements = document.querySelector("#post-update-form");
+    // change specific old nodes to updated values
+    oldNodes[1].innerHTML = elements.title.value;
+    oldNodes[3].src = elements.image.value;
+    oldNodes[5].innerHTML = elements.body.value;  
+}
+// replace old user nodes to updated user values 
+function replaceOldNodes_User(oldNodes){
+    console.log("Replacing old USER nodes");
+    // get form inputs values
+    const elements = document.querySelector("#user-update-form");
+    // change specific old nodes to updated values
+    oldNodes[1].src = elements.image.value;
+    oldNodes[3].innerHTML = elements.title.value;
+    oldNodes[5].innerHTML = elements.name.value;  
+    oldNodes[7].innerHTML = elements.mail.value;  
+    oldNodes[9].innerHTML = elements.mail.value;  
+}
+// fetch single item from database
+async function fetchItem(id, type){
+    //get updated or new item from database
+    const response =  await fetch(`${endpoint}/${type}/${id}.json`);
+    const updatedData = await response.json();
+    return updatedData;
+}
 //make user object and PUT to database
 async function user_PUT(title, name, image, mail, phone, id){
         //create new object
@@ -312,6 +315,9 @@ async function user_PUT(title, name, image, mail, phone, id){
             console.log("Updated USER succesfully");
             // alert("Update succesfull");
         }
+        else if(!response.ok){
+            // show error message and reload page
+        }
 }
 //make post object and PUT to database
 async function post_PUT(title, body, image, id){
@@ -333,6 +339,9 @@ async function post_PUT(title, body, image, id){
             console.log("Updated POST succesfully");
             // alert("Update succesfull");
         }
+        else if(!response.ok){
+            // show error message and reload page
+        }
 }
 //make USER object and POST to database
 async function user_POST(title, name, image, mail, phone){
@@ -352,9 +361,15 @@ async function user_POST(title, name, image, mail, phone){
                 method: "POST", 
                 body: dataAsJson 
         });
+        if (response.ok){
+            console.log("CREATED USER succesfully");
+            // alert("USER created succesfull");
+        }
+        else if(!response.ok){
+            // show error message and reload page
+        }
     // response with new object id/name
     const data = await response.json();
-        console.log("response id/name: ", data.name);
     // make get request to input specific element into DOM from response id
     insertNewItem(data.name, "users");
   
@@ -375,6 +390,13 @@ async function post_POST(title, body, image){
                 method: "POST", 
                 body: dataAsJson 
         });
+        if (response.ok){
+            console.log("CREATED POST succesfully");
+            // alert("Update succesfull");
+        }
+        else if(!response.ok){
+            // show error message and reload page
+        }
 
     // response with new object id/name
     const data = await response.json();
@@ -384,9 +406,12 @@ async function post_POST(title, body, image){
 // deletes item from database
 async function deleteData(id, type) {
     const url = `${endpoint}/${type}/${id}.json`;
-    const res = await fetch(url, { method: "DELETE" });
-    if (res.ok){
+    const response = await fetch(url, { method: "DELETE" });
+    if (response.ok){
         console.log("Item was succefully deleted");
         //make message prompt
+    }
+    else if(!response.ok){
+        // show error message and reload page
     }
 }
