@@ -4,13 +4,13 @@
     ------ TODO ------
     implement feedback message for user with update, delete and create
 
-    find solution for updateData NOT replacing nodes if !response.ok
+    find solution for updateData NOT replacing nodes if !response.ok --- FOUND: reload page if error IMPLEMENT
 
     fix update close btn still calls updateData when clicked and then click update on another item. very strange
 
     fix that update btn dont have correct eventListener after clicking update, every earlier element is updated when new elements is updated, they end up acting as one??
 
-    implement validation
+    implement validation - how to make uid?? 
 
     remember to remove html input values
 */
@@ -100,7 +100,7 @@ function createItem(event){
             // reset form
             document.querySelector("#post-create-form").reset();
             // remove eventlistener
-            document.querySelector("#post-create-form").removeEventListener("submit", createData);
+            document.querySelector("#post-create-form").removeEventListener("submit", createItem);
             // post values
             const title = event.target.title.value;
             const image = event.target.image.value;
@@ -115,7 +115,7 @@ function createItem(event){
              // reset form
              document.querySelector("#user-create-form").reset();
             // remove eventlistener
-            document.querySelector("#user-create-form").removeEventListener("submit", createData);
+            document.querySelector("#user-create-form").removeEventListener("submit", createItem);
             
             // user values
             const name = event.target.name.value;
@@ -312,11 +312,13 @@ async function user_PUT(title, name, image, mail, phone, id){
                 body: dataAsJson 
         });
         if (response.ok){
-            console.log("Updated USER succesfully");
-            // alert("Update succesfull");
+            console.log("USER Updated succesfully");
+            alert("USER update succesfull");
         }
         else if(!response.ok){
             // show error message and reload page
+            alert("ERROR: USER Update NOT succesfull ");
+            loopData("users");
         }
 }
 //make post object and PUT to database
@@ -337,10 +339,12 @@ async function post_PUT(title, body, image, id){
         });
         if (response.ok){
             console.log("Updated POST succesfully");
-            // alert("Update succesfull");
+            alert("POST update succesfull");
         }
         else if(!response.ok){
             // show error message and reload page
+            alert("ERROR: POST Update NOT succesfull ");
+            loopData("posts");
         }
 }
 //make USER object and POST to database
@@ -363,10 +367,12 @@ async function user_POST(title, name, image, mail, phone){
         });
         if (response.ok){
             console.log("CREATED USER succesfully");
-            // alert("USER created succesfull");
+            alert("USER created succesfull");
         }
         else if(!response.ok){
             // show error message and reload page
+            alert("ERROR: USER CREATE NOT succesfull ");
+            loopData("users");
         }
     // response with new object id/name
     const data = await response.json();
@@ -392,10 +398,12 @@ async function post_POST(title, body, image){
         });
         if (response.ok){
             console.log("CREATED POST succesfully");
-            // alert("Update succesfull");
+            alert("POST CREATE succesfull");
         }
         else if(!response.ok){
             // show error message and reload page
+            alert("ERROR: POST CREATE NOT succesfull ");
+            loopData("posts");
         }
 
     // response with new object id/name
