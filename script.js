@@ -35,10 +35,14 @@ async function initApp(){
 
      // add eventlistner to submit forms 
     //  document.querySelector("#post-update-form").addEventListener("submit", updateSubmit);
+
     // add eventListener to create-btns
      document.querySelector("#post-create-btn").addEventListener("click", post_createDialog);
      document.querySelector("#user-create-btn").addEventListener("click", user_createDialog);
 
+     // add eventListener to delete-btn dialog
+     document.querySelector("#form-delete").addEventListener("submit", deleteData);
+    
       // add hidden class to USER CREATE btn
     document.querySelector("#user-create-btn").classList.add("hidden");
 }
@@ -52,73 +56,6 @@ async function iterateData(type){
     for (let dataItem of dataArray) {
         displayItem(dataItem, type);
     }
-}
-//change create btn to show create user OR create post
-function change_create_btn(){
-        const btn = this;
-        //show or hide create-btn
-        if (btn.id === "users-btn"){ 
-            document.querySelector("#post-create-btn").classList.add("hidden");
-            document.querySelector("#user-create-btn").classList.remove("hidden");
-        }
-        else if (btn.id === "posts-btn"){
-            document.querySelector("#post-create-btn").classList.remove("hidden");
-            document.querySelector("#user-create-btn").classList.add("hidden");
-        }
-}
-//open POST create dialog
-function post_createDialog(){
-    document.querySelector("#post-create-dialog").showModal();
-    document.querySelector("#post-create-form").addEventListener("submit", createItem);
-}
-//opens USER create dialog
-function user_createDialog(){
-    document.querySelector("#user-create-dialog").showModal();
-    document.querySelector("#user-create-form").addEventListener("submit", createItem);
-}
-//create item object and fetch to firebase
-function createItem(event){
-    event.preventDefault();
-    const element = this;
-        // decide what to create and send
-        if(element.id === "post-create-form"){
-            // close dialog
-            document.querySelector("#post-create-dialog").close();
-            // reset form
-            document.querySelector("#post-create-form").reset();
-            // remove eventlistener
-            document.querySelector("#post-create-form").removeEventListener("submit", createItem);
-            // post values
-            const title = event.target.title.value;
-            const image = event.target.image.value;
-            const body = event.target.body.value;
-          
-            post_POST(title, body, image);
-        }
-
-        else if (element.id === "user-create-form"){
-            // close dialog
-            document.querySelector("#user-create-dialog").close();
-             // reset form
-             document.querySelector("#user-create-form").reset();
-            // remove eventlistener
-            document.querySelector("#user-create-form").removeEventListener("submit", createItem);
-            
-            // user values
-            const name = event.target.name.value;
-            const title = event.target.title.value;
-            const image = event.target.image.value;
-            const mail = event.target.mail.value;
-            const phone = event.target.phone.value;
-
-            user_POST(title, name, image, mail, phone);
-        } 
-}
-//fetch and insert new item
-async function insertNewItem(id, type){
-    console.log("inserting new item");
-    const newItem = await fetchItem(id, type);
-    displayItem(newItem, type);
 }
 //fetch with async/await
 async function loadData(type){
@@ -141,7 +78,7 @@ function prepareDataArray(dataObject){
 //returns HTML post element
 function makeHTMLpost(dataItem){
     const html = /*HTML*/ `
-        <article class="grid-item" data-object=${dataItem.id} type="posts">
+        <article class="grid-item" data-object=${dataItem.id} title="posts">
                 <h1 class="title">${dataItem.title}</h1>
                 <img class="image" src="${dataItem.image}">
                 <h1 class="body">${dataItem.body}</h1>
@@ -157,7 +94,7 @@ function makeHTMLpost(dataItem){
 function makeHTMLuser(dataItem){ 
     //make for users object
     const html = /*HTML*/ `
-        <article class="grid-item" data-object=${dataItem.id} type="users">
+        <article class="grid-item" data-object=${dataItem.id} title="users">
                 <img class="image" src="${dataItem.image}">
                 <h1 class="user_name">${dataItem.name}</h1>
                 <h1 class="user_title">${dataItem.title}</h1>
@@ -191,20 +128,19 @@ function displayItem(dataItem, type){
         };
         // add eventListener to delete btn
         document.querySelector("#items article:first-child .delete-btn").addEventListener("click", deleteClicked);
-    
+        
     function deleteClicked(){
-        //confirm delete before deleting 
-        // if(confirm("Are you sure? This action is irreversible")){
-                // delete item from database
-            deleteData(dataItem.id, type);
-            // remove deleted element from DOM
-            const element = this;
-            element.parentElement.remove();
-        // }
-        // else{
-        //     //troll user
-        //     alert("pussy"); 
-        // }    
+        // get title value to indicate TYPE of data to delete
+        const type = this.parentElement.title;
+            document.querySelector("#dialog-delete-title").textContent = dataItem.title;
+            document.querySelector("#form-delete").setAttribute("data-id", dataItem.id);
+            document.querySelector("#form-delete").setAttribute("title", type);
+            document.querySelector("#dialog-delete").showModal();
+
+            // // remove deleted element from DOM
+            // const element = this;
+            // console.log("element: ", element.parentElement.title)
+            // element.parentElement.remove();      
     }
     function user_updateClicked(){
         //open modal
@@ -229,6 +165,36 @@ function displayItem(dataItem, type){
         event.preventDefault();
         updateData(dataItem.id, type);
     }
+}
+//deletes item from database
+async function deleteData(event) {
+    //get values to id item to delete in database
+    const id = event.target.getAttribute("data-id");
+    const type = event.target.getAttribute("title"); //data type WEIRD I KNOW sry
+
+    const url = `${endpoint}/${type}/${id}.json`;
+    const response = await fetch(url, { method: "DELETE" });
+        if (response.ok){
+            console.log("Item was succefully deleted");
+            // alert("ITEM WAS SUCCESFULLY DELETED");
+            const element_to_delete = find_item_by_data_id(id);
+            element_to_delete.remove();
+        }
+        else if(!response.ok){
+            // show error message and reload page
+            alert("ERROR: error deleting ITEM")
+        }
+}
+function find_item_by_data_id(id){
+    // get all items currently displayed 
+    const items = document.getElementsByClassName("grid-item");
+        // iterate and check id and return element with matching id
+        for (let i = 0; i < items.length; i++){
+            if (items[i].getAttribute("data-object") === id){
+                const html_element = items[i];
+                return html_element;
+            }
+        }
 }
 //update data in database
 async function updateData(id, type){
@@ -415,19 +381,6 @@ async function fetchItem(id, type){
     const updatedData = await response.json();
     return updatedData;
 }
-//deletes item from database
-async function deleteData(id, type) {
-    const url = `${endpoint}/${type}/${id}.json`;
-    const response = await fetch(url, { method: "DELETE" });
-    if (response.ok){
-        console.log("Item was succefully deleted");
-        // alert("ITEM WAS SUCCESFULLY DELETED");
-    }
-    else if(!response.ok){
-        // show error message and reload page
-        alert("ERROR: error deleting ITEM")
-    }
-}
 //hide object information
 function hide_item(){
     // get item children elements
@@ -461,7 +414,73 @@ function reveal_item(){
      // add eventListener to hide-btn again
      document.querySelector(".hide-btn").addEventListener("click", hide_item);
 }
+//change create btn to show create user OR create post
+function change_create_btn(){
+    const btn = this;
+    //show or hide create-btn
+    if (btn.id === "users-btn"){ 
+        document.querySelector("#post-create-btn").classList.add("hidden");
+        document.querySelector("#user-create-btn").classList.remove("hidden");
+    }
+    else if (btn.id === "posts-btn"){
+        document.querySelector("#post-create-btn").classList.remove("hidden");
+        document.querySelector("#user-create-btn").classList.add("hidden");
+    }
+}
+//open POST create dialog
+function post_createDialog(){
+    document.querySelector("#post-create-dialog").showModal();
+    document.querySelector("#post-create-form").addEventListener("submit", createItem);
+}
+//opens USER create dialog
+function user_createDialog(){
+    document.querySelector("#user-create-dialog").showModal();
+    document.querySelector("#user-create-form").addEventListener("submit", createItem);
+}
+//create item object and fetch to firebase
+function createItem(event){
+    event.preventDefault();
+    const element = this;
+        // decide what to create and send
+        if(element.id === "post-create-form"){
+            // close dialog
+            document.querySelector("#post-create-dialog").close();
+            // reset form
+            document.querySelector("#post-create-form").reset();
+            // remove eventlistener
+            document.querySelector("#post-create-form").removeEventListener("submit", createItem);
+            // post values
+            const title = event.target.title.value;
+            const image = event.target.image.value;
+            const body = event.target.body.value;
+          
+            post_POST(title, body, image);
+        }
 
+        else if (element.id === "user-create-form"){
+            // close dialog
+            document.querySelector("#user-create-dialog").close();
+             // reset form
+             document.querySelector("#user-create-form").reset();
+            // remove eventlistener
+            document.querySelector("#user-create-form").removeEventListener("submit", createItem);
+            
+            // user values
+            const name = event.target.name.value;
+            const title = event.target.title.value;
+            const image = event.target.image.value;
+            const mail = event.target.mail.value;
+            const phone = event.target.phone.value;
+
+            user_POST(title, name, image, mail, phone);
+        } 
+}
+//fetch and insert new item
+async function insertNewItem(id, type){
+    console.log("inserting new item");
+    const newItem = await fetchItem(id, type);
+    displayItem(newItem, type);
+}
 
 
 //display POST in DOM 
