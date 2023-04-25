@@ -3,8 +3,8 @@
 /*
     ------ TODO ------
 
-    fix eventListner RUINING my hide/reveal function -- when hide-btn is clicked show-btn shows on firstChild grid-container and reveal malfunctions
-
+    implement "toast" messsages for update, create and delete
+    
     implement search function - name, titel, mail, phone 
 
     implement sort() function
@@ -30,7 +30,7 @@ async function initApp(){
     document.querySelector("#posts-btn").addEventListener("click", function(){iterateData("posts")});
     document.querySelector("#users-btn").addEventListener("click", function(){iterateData("users")});
 
-    // add eventlistner to update submit forms 
+    // add eventlistener to update submit forms 
      document.querySelector("#post-update-form").addEventListener("submit", updateData);
      document.querySelector("#user-update-form").addEventListener("submit", updateData);
 
@@ -106,23 +106,26 @@ function makeHTMLuser(dataItem){
     `;
     return html;
 }
-//display single item - add eventListeners - constrols deleteClicked, user_updateClicked, post_updateDialog
+//display single item - add eventListeners - controls deleteClicked, user_updateClicked, post_updateDialog
 function displayItem(dataItem, type){
     // check for what HTML element to create and insert
         if (type === "posts"){
             // make html post to insert in DOM
             const html = makeHTMLpost(dataItem);
             document.querySelector("#items").insertAdjacentHTML("afterbegin", html);
-            // add eventListener to update btn
+            // add eventListener to update btn and hide functionality
             document.querySelector("#items article:first-child .update-btn").addEventListener("click", post_updateClicked);
             document.querySelector("#items article:first-child .hide-btn").addEventListener("click", hide_item);
+            document.querySelector("#items article:first-child .show-btn").addEventListener("click", reveal_item);
         }
         else if (type === "users"){
              const html = makeHTMLuser(dataItem);
              document.querySelector("#items").insertAdjacentHTML("afterbegin", html);
-             // add eventListener to update btn dialog and hide function
+             // add eventListener to update btn dialog and hide functionality
             document.querySelector("#items article:first-child .update-btn").addEventListener("click", user_updateClicked);
             document.querySelector("#items article:first-child .hide-btn").addEventListener("click", hide_item);
+            document.querySelector("#items article:first-child .show-btn").addEventListener("click", reveal_item);
+
         };
         // add eventListener to delete btn
         document.querySelector("#items article:first-child .delete-btn").addEventListener("click", deleteClicked);
@@ -171,6 +174,7 @@ function displayItem(dataItem, type){
         document.querySelector("#post-update-dialog").showModal();
     }
 }
+//find and return html element
 function find_item_by_data_id(id){
     // get all items currently displayed 
     const items = document.getElementsByClassName("grid-item");
@@ -185,11 +189,10 @@ function find_item_by_data_id(id){
 //update data in database
 async function updateData(event){
     event.preventDefault();
+    //values for identification
     const form = event.target;
-
     const id = form.getAttribute("data-id");
-    const type = form.getAttribute("title"); // data type to update 
-    console.log("event form title: ,", form);
+    const type = form.getAttribute("title"); // data type to update murder me
  
     if (type === "users"){
         // get user form inputs
@@ -233,9 +236,6 @@ async function updateData(event){
 }
 //replace old post nodes to updated post values 
 function update_POST_info(oldNodes){
-    console.log("Replacing old POST nodes");
-    // get HTML nodes to replace
-    // const oldNodes = this.parentElement.childNodes;
     // get form inputs values
     const elements = document.querySelector("#post-update-form");
     // change specific old nodes to updated values
@@ -245,7 +245,6 @@ function update_POST_info(oldNodes){
 }
 //replace old user nodes to updated user values 
 function update_USER_info(oldNodes){
-    console.log("Replacing old USER nodes");
     // get form inputs values
     const elements = document.querySelector("#user-update-form");
     // change specific old nodes to updated values
@@ -275,12 +274,11 @@ const response = await fetch(`${endpoint}/users/${id}.json`,
     });
     if (response.ok){
         console.log("USER Updated succesfully");
-        // alert("USER update succesfull");
-        insertNewItem
+        // make "toast" message
     }
     else if(!response.ok){
         // show error message and reload page
-        // alert("ERROR: USER Update NOT succesfull ");
+        alert("ERROR: USER Update NOT succesfull ");
         iterateData("users");
     }
 }
@@ -302,11 +300,11 @@ const response = await fetch(`${endpoint}/posts/${id}.json`,
     });
     if (response.ok){
         console.log("Updated POST succesfully");
-        // alert("POST update succesfull");
+        // make "toast" message
     }
     else if(!response.ok){
         // show error message and reload page
-        // alert("ERROR: POST Update NOT succesfull ");
+        alert("ERROR: POST Update NOT succesfull ");
         iterateData("posts");
     }
 }
@@ -330,11 +328,11 @@ async function user_POST(title, name, image, mail, phone){
         });
         if (response.ok){
             console.log("CREATED USER succesfully");
-            // alert("USER created succesfull");
+            // make "toast" message
         }
         else if(!response.ok){
             // show error message and reload page
-            // alert("ERROR: USER CREATE NOT succesfull ");
+            alert("ERROR: USER CREATE NOT succesfull ");
             iterateData("users");
         }
     // response with new object id/name
@@ -361,11 +359,11 @@ async function post_POST(title, body, image){
         });
         if (response.ok){
             console.log("CREATED POST succesfully");
-            // alert("POST CREATE succesfull");
+            // make "toast" message
         }
         else if(!response.ok){
             // show error message and reload page
-            // alert("ERROR: POST CREATE NOT succesfull ");
+            alert("ERROR: POST CREATE NOT succesfull ");
             iterateData("posts");
         }
 
@@ -385,34 +383,23 @@ async function fetchItem(id, type){
 function hide_item(){
     // get item children elements
     const elements = this.parentElement.children;
-    console.log(elements, this.parentElement);
     //add hidden class to all children elements except last (.show-btn)
     for (let i = (elements.length -1); i >= 0; i--){
         elements[i].classList.add("hidden");    
     }
-    // remove eventListener from hide btn
-    this.removeEventListener("click", hide_item);
-
-    // add eventListner to show-btn to reveal item
-    document.querySelector(".show-btn").addEventListener("click", reveal_item);
-    document.querySelector(".show-btn").classList.remove("hidden");
+    // remove hidden
+    elements[elements.length-1].classList.remove("hidden");
 }
 //reveal object information
 function reveal_item(){
-    //  remove eventListener from hide elements
-    this.removeEventListener("click", reveal_item);
-    // get item children elements
+    // get children elements from html
     const elements = this.parentElement.children;
-    console.log(elements, this.parentElement);
     //remove hidden class from all children elements except last (.show-btn)
     for (let i = (elements.length -1); i >= 0; i--){
         elements[i].classList.remove("hidden");    
     }
     // add .hidden to show-btn again
-     document.querySelector(".show-btn").classList.add("hidden");
-
-     // add eventListener to hide-btn again
-     document.querySelector(".hide-btn").addEventListener("click", hide_item);
+    elements[elements.length -1].classList.add("hidden");
 }
 //deletes item from database
 async function deleteData(event) {
