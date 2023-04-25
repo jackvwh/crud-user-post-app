@@ -3,10 +3,6 @@
 /*
     ------ TODO ------
 
-    hardcode change btns to fix empty function call in eventListener
-
-    fix update: when close btn is clicked without updating and the user clicks update on another elements then the first AND second element is updated. stacks up with every element clicked
-
     fix eventListner RUINING my hide/reveal function -- when hide-btn is clicked show-btn shows on firstChild grid-container and reveal malfunctions
 
     implement search function - name, titel, mail, phone 
@@ -29,12 +25,14 @@ async function initApp(){
     // add eventListener to SHOW ALL USER and SHOW ALL POSTS btns to change create btn
     document.querySelector("#users-btn").addEventListener("click", change_create_btn);
     document.querySelector("#posts-btn").addEventListener("click", change_create_btn);
-     //make eventListener for calling either posts or users json
+
+     //make eventListener for calling either posts or users json --- the ONLY empty function calls
     document.querySelector("#posts-btn").addEventListener("click", function(){iterateData("posts")});
     document.querySelector("#users-btn").addEventListener("click", function(){iterateData("users")});
 
-     // add eventlistner to submit forms 
-    //  document.querySelector("#post-update-form").addEventListener("submit", updateSubmit);
+    // add eventlistner to update submit forms 
+     document.querySelector("#post-update-form").addEventListener("submit", updateData);
+     document.querySelector("#user-update-form").addEventListener("submit", updateData);
 
     // add eventListener to create-btns
      document.querySelector("#post-create-btn").addEventListener("click", post_createDialog);
@@ -78,7 +76,7 @@ function prepareDataArray(dataObject){
 //returns HTML post element
 function makeHTMLpost(dataItem){
     const html = /*HTML*/ `
-        <article class="grid-item" data-object=${dataItem.id} title="posts">
+        <article class="grid-item" data-id=${dataItem.id} title="posts">
                 <h1 class="title">${dataItem.title}</h1>
                 <img class="image" src="${dataItem.image}">
                 <h1 class="body">${dataItem.body}</h1>
@@ -94,7 +92,7 @@ function makeHTMLpost(dataItem){
 function makeHTMLuser(dataItem){ 
     //make for users object
     const html = /*HTML*/ `
-        <article class="grid-item" data-object=${dataItem.id} title="users">
+        <article class="grid-item" data-id=${dataItem.id} title="users">
                 <img class="image" src="${dataItem.image}">
                 <h1 class="user_name">${dataItem.name}</h1>
                 <h1 class="user_title">${dataItem.title}</h1>
@@ -108,7 +106,7 @@ function makeHTMLuser(dataItem){
     `;
     return html;
 }
-//display single item - add eventListener - deleteClicked, user_updateClicked, post_updateDialog, updateSubmit functions
+//display single item - add eventListeners - constrols deleteClicked, user_updateClicked, post_updateDialog
 function displayItem(dataItem, type){
     // check for what HTML element to create and insert
         if (type === "posts"){
@@ -132,74 +130,67 @@ function displayItem(dataItem, type){
     function deleteClicked(){
         // get title value to indicate TYPE of data to delete
         const type = this.parentElement.title;
-            document.querySelector("#dialog-delete-title").textContent = dataItem.title;
-            document.querySelector("#form-delete").setAttribute("data-id", dataItem.id);
-            document.querySelector("#form-delete").setAttribute("title", type);
-            document.querySelector("#dialog-delete").showModal();
+        document.querySelector("#dialog-delete-title").textContent = dataItem.title;
+        // set attributes values for further identification
+        document.querySelector("#form-delete").setAttribute("title", type);
+        document.querySelector("#form-delete").setAttribute("data-id", dataItem.id);
+        //open modal
+        document.querySelector("#dialog-delete").showModal();
 
-            // // remove deleted element from DOM
-            // const element = this;
-            // console.log("element: ", element.parentElement.title)
-            // element.parentElement.remove();      
     }
     function user_updateClicked(){
-        //open modal
-        document.querySelector("#user-update-dialog").showModal();
-        // add eventlistner to submit form 
-        document.querySelector("#user-update-form").addEventListener("submit", updateSubmit);
-        document.querySelector("#user-update-form-btn").addEventListener("click", function(){replaceOldNodes_User(oldNodes)});
+          // get title value to indicate TYPE of data to update
+          const type = this.parentElement.title;
+
+          const user_updateForm = document.querySelector("#user-update-form"); 
+           // insert current object values in update form
+          user_updateForm.name.value = dataItem.name; 
+          user_updateForm.title.value = dataItem.title; 
+          user_updateForm.image.value = dataItem.image; 
+          user_updateForm.mail.value = dataItem.mail; 
+          user_updateForm.phone.value = dataItem.phone; 
+          //insert dataID attribute for identification later
+          user_updateForm.setAttribute("data-id", dataItem.id); 
+          user_updateForm.setAttribute("title", type);
+          //open modal
+          document.querySelector("#user-update-dialog").showModal();
     }
     function post_updateClicked(){
-        // insert current object values in update form
-        const updateForm = document.querySelector("#post-update-form"); 
-            updateForm.title.value = dataItem.title; 
-            updateForm.body.value = dataItem.body; 
-            updateForm.image.value = dataItem.image; 
-            //insert dataID attribute for selection later
-            updateForm.setAttribute("data-id", dataItem.id); 
-       
+         // get title value to indicate TYPE of data to update
+        const type = this.parentElement.title;
+
+        const post_updateForm = document.querySelector("#post-update-form"); 
+         // insert current object values in update form
+        post_updateForm.title.value = dataItem.title; 
+        post_updateForm.body.value = dataItem.body; 
+        post_updateForm.image.value = dataItem.image; 
+        //insert dataID attribute for identification later
+        post_updateForm.setAttribute("data-id", dataItem.id); 
+        post_updateForm.setAttribute("title", type);
         //open modal
         document.querySelector("#post-update-dialog").showModal();
     }
-    function updateSubmit(event){
-        event.preventDefault();
-        updateData(dataItem.id, type);
-    }
-}
-//deletes item from database
-async function deleteData(event) {
-    //get values to id item to delete in database
-    const id = event.target.getAttribute("data-id");
-    const type = event.target.getAttribute("title"); //data type WEIRD I KNOW sry
-
-    const url = `${endpoint}/${type}/${id}.json`;
-    const response = await fetch(url, { method: "DELETE" });
-        if (response.ok){
-            console.log("Item was succefully deleted");
-            // alert("ITEM WAS SUCCESFULLY DELETED");
-            const element_to_delete = find_item_by_data_id(id);
-            element_to_delete.remove();
-        }
-        else if(!response.ok){
-            // show error message and reload page
-            alert("ERROR: error deleting ITEM")
-        }
 }
 function find_item_by_data_id(id){
     // get all items currently displayed 
     const items = document.getElementsByClassName("grid-item");
         // iterate and check id and return element with matching id
         for (let i = 0; i < items.length; i++){
-            if (items[i].getAttribute("data-object") === id){
+            if (items[i].getAttribute("data-id") === id){
                 const html_element = items[i];
                 return html_element;
             }
         }
 }
 //update data in database
-async function updateData(id, type){
-    console.log("Updating database");
+async function updateData(event){
+    event.preventDefault();
+    const form = event.target;
 
+    const id = form.getAttribute("data-id");
+    const type = form.getAttribute("title"); // data type to update 
+    console.log("event form title: ,", form);
+ 
     if (type === "users"){
         // get user form inputs
         const elements = document.querySelector("#user-update-form");
@@ -211,10 +202,15 @@ async function updateData(id, type){
         const title = elements.title.value;
         const name = elements.name.value;
         const image = elements.image.value;
-        const mail = elements.mailvalue;
+        const mail = elements.mail.value;
         const phone = elements.phone.value;
         //update database with updated values
         user_PUT(title, name, image, mail, phone, id);
+
+        // change old nodes to updated info
+        const nodes_to_update = find_item_by_data_id(id).childNodes;
+        update_USER_info(nodes_to_update);
+
     }
     else if (type === "posts"){
         // get post form inputs
@@ -229,10 +225,14 @@ async function updateData(id, type){
         const image = elements.image.value;
         //update database with updated values
         post_PUT(title, body , image, id);
+
+        // change old nodes to updated info
+        const nodes_to_update = find_item_by_data_id(id).childNodes;
+        update_POST_info(nodes_to_update);
     }
 }
 //replace old post nodes to updated post values 
-function replaceOldNodes_Post(oldNodes){
+function update_POST_info(oldNodes){
     console.log("Replacing old POST nodes");
     // get HTML nodes to replace
     // const oldNodes = this.parentElement.childNodes;
@@ -244,7 +244,7 @@ function replaceOldNodes_Post(oldNodes){
     oldNodes[5].innerHTML = elements.body.value;  
 }
 //replace old user nodes to updated user values 
-function replaceOldNodes_User(oldNodes){
+function update_USER_info(oldNodes){
     console.log("Replacing old USER nodes");
     // get form inputs values
     const elements = document.querySelector("#user-update-form");
@@ -253,7 +253,7 @@ function replaceOldNodes_User(oldNodes){
     oldNodes[3].innerHTML = elements.title.value;
     oldNodes[5].innerHTML = elements.name.value;  
     oldNodes[7].innerHTML = elements.mail.value;  
-    oldNodes[9].innerHTML = elements.mail.value;  
+    oldNodes[9].innerHTML = elements.phone.value;  
 }
 //make user object and PUT to database
 async function user_PUT(title, name, image, mail, phone, id){
@@ -414,7 +414,24 @@ function reveal_item(){
      // add eventListener to hide-btn again
      document.querySelector(".hide-btn").addEventListener("click", hide_item);
 }
-//change create btn to show create user OR create post
+//deletes item from database
+async function deleteData(event) {
+    //get values to id item to delete in database
+    const id = event.target.getAttribute("data-id");
+    const type = event.target.getAttribute("title"); //data type WEIRD I KNOW sry
+    // delete item globally
+    const url = `${endpoint}/${type}/${id}.json`;
+    const response = await fetch(url, { method: "DELETE" });
+        if (response.ok){
+            // delete item locally
+            const element_to_delete = find_item_by_data_id(id);
+            element_to_delete.remove();
+        }
+        else if(!response.ok){
+            alert("ERROR: error deleting ITEM")
+        }
+}
+//change create btn to show create USER or create POST
 function change_create_btn(){
     const btn = this;
     //show or hide create-btn
@@ -480,30 +497,4 @@ async function insertNewItem(id, type){
     console.log("inserting new item");
     const newItem = await fetchItem(id, type);
     displayItem(newItem, type);
-}
-
-
-//display POST in DOM 
-function display_POST(dataItem){
-    // make html post to insert in DOM
-    const html = makeHTMLpost(dataItem);
-    document.querySelector("#items").insertAdjacentHTML("afterbegin", html);
-    // add eventListener to update btn
-    document.querySelector("#items article:first-child .update-btn").addEventListener("click", post_updateClicked);
-    //add eventListener to hide-btn
-    document.querySelector("#items article:first-child .hide-btn").addEventListener("click", hide_item);
-    // add eventListener to delete btn
-    document.querySelector("#items article:first-child .delete-btn").addEventListener("click", deleteClicked);
-}
-//display USER in DOM 
-function display_USER(dataItem){
-    // make html post to insert in DOM
-    const html = makeHTMLpost(dataItem);
-    document.querySelector("#items").insertAdjacentHTML("afterbegin", html);
-    // add eventListener to update btn
-    document.querySelector("#items article:first-child .update-btn").addEventListener("click", user_updateClicked);
-    //add eventListener to hide-btn
-    document.querySelector("#items article:first-child .hide-btn").addEventListener("click", hide_item);
-    // add eventListener to delete btn
-    document.querySelector("#items article:first-child .delete-btn").addEventListener("click", deleteClicked);
 }
