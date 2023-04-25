@@ -34,7 +34,7 @@ main {
     /*min heigh is screen heigh minus height of tab and top bar */
     min-height: calc(100vh - 110px);
     background: rgb(121, 22, 83);
-    padding: 108px 0 0;
+    padding: 180px 0 0;
 }
 
 /* ---------- grid container styling ---------- */

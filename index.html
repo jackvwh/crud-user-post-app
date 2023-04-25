@@ -11,18 +11,41 @@
 
     <header>
         <h1>CRUD APPLICATION</h1>
-    </header>
-
-    <main>   
         <nav id="nav-btns">
             <button id="posts-btn" class="post-btn">SHOW ALL POSTS</button>
             <button id="users-btn" class="user-btn">SHOW ALL USERS</button>
         </nav>
 
-         <!-- create btn section  -->
-         <section id="create-btns"></section>
+    <!-------- create btn section  -------->
+         <section id="create-btns">
+            <button id="post-create-btn" class="post-btn">NEW Post</button>
+            <button id="user-create-btn" class="user-btn">NEW User</button>
+         </section>
+    </header>
+
+    <main>   
+       
 
         <section id="items" class="grid-container"></section>
+
+    <!------- DELETE POST DIALOG------->
+    <dialog id="dialog-delete-post">
+        <h2>Do you want to delete post?</h2>
+        <p id="dialog-delete-post-title">Title of post</p>
+        <form method="dialog" id="form-delete-post">
+            <button type="button" class="btn-cancel">No</button>
+            <button>Yes</button>
+        </form>
+    </dialog>
+    <!------- DELETE USER DIALOG------->
+    <dialog id="dialog-delete-post">
+        <h2>Do you want to delete post?</h2>
+        <p id="dialog-delete-post-title">Title of post</p>
+        <form method="dialog" id="form-delete-post">
+            <button type="button" class="btn-cancel">No</button>
+            <button>Yes</button>
+        </form>
+    </dialog>
 
     <!------------------- INPUT FORMS ------------------>
         <!--POST CREATE DIALOG  -->
