@@ -19,13 +19,15 @@ window.addEventListener("load", initApp);
 //initialise application 
 async function initApp(){
     console.log("Starting");
+
     // fetch and iterate json array and show items
     iterateData("posts");
+
     // add eventListener to SHOW ALL USER and SHOW ALL POSTS btns to change create btn
     document.querySelector("#users-btn").addEventListener("click", change_create_btn);
     document.querySelector("#posts-btn").addEventListener("click", change_create_btn);
 
-     //make eventListener for calling either posts or users json --- the ONLY empty function calls
+     //make eventListener for calling either post OR user data --- the ONLY empty function calls
     document.querySelector("#posts-btn").addEventListener("click", function(){iterateData("posts")});
     document.querySelector("#users-btn").addEventListener("click", function(){iterateData("users")});
 
@@ -44,7 +46,7 @@ async function initApp(){
     document.querySelector("#user-create-btn").classList.add("hidden");
 
     // add eventListener to toast message
-    document.querySelector("#m_toast").addEventListener("click", function(){this.classList.add("hidden")});
+    document.querySelector("#response-message").addEventListener("click", function(){this.classList.add("hidden")});
 }
 //iterate data array and show items
 async function iterateData(type){
@@ -65,12 +67,14 @@ async function loadData(type){
     const dataArray = prepareDataArray(data);
     return dataArray;
 }
-// show toast message 
-function mtoast(msg) {
-    const toast = document.getElementById("m_toast");
-    toast.innerHTML = msg;
-    toast.classList.remove("hidden");
-  }
+// show reponse message to user 
+function response_message(msg) {
+    const message_element = document.getElementById("response-message");
+    message_element.innerHTML = msg;
+    message_element.classList.remove("hidden");
+    // automatically remove toast message if user doesn´t click it
+    setTimeout(function(){message_element.classList.add("hidden")}, 2000);
+}
 //make Json object to object array
 function prepareDataArray(dataObject){
     const dataArray = [];
@@ -114,7 +118,7 @@ function makeHTMLuser(dataItem){
     `;
     return html;
 }
-//display single item - add eventListeners - controls deleteClicked, user_updateClicked, post_updateDialog
+//display single item - add eventListeners - controls deleteClicked, user_updateClicked, post_updateCLicked
 function displayItem(dataItem, type){
     // check for what HTML element to create and insert
         if (type === "posts"){
@@ -242,7 +246,7 @@ async function updateData(event){
         update_POST_info(nodes_to_update);
     }
 }
-//replace old post nodes to updated post values 
+//replace old post node values to updated values 
 function update_POST_info(oldNodes){
     // get form inputs values
     const elements = document.querySelector("#post-update-form");
@@ -251,7 +255,7 @@ function update_POST_info(oldNodes){
     oldNodes[3].src = elements.image.value;
     oldNodes[5].innerHTML = elements.body.value;  
 }
-//replace old user nodes to updated user values 
+//replace old user node values to updated values 
 function update_USER_info(oldNodes){
     // get form inputs values
     const elements = document.querySelector("#user-update-form");
@@ -281,7 +285,7 @@ const response = await fetch(`${endpoint}/users/${id}.json`,
             body: dataAsJson 
     });
     if (response.ok){
-        mtoast("USER SUCCESSFULLY CREATED");
+        response_message("USER SUCCESSFULLY UPDATED");
     }
     else if(!response.ok){
         // show error message and reload page
@@ -306,7 +310,7 @@ const response = await fetch(`${endpoint}/posts/${id}.json`,
             body: dataAsJson 
     });
     if (response.ok){
-        mtoast("POST SUCCESSFULLY UPDATED");
+        response_message("POST SUCCESSFULLY UPDATED");
     }
     else if(!response.ok){
         // show error message and reload page
@@ -333,7 +337,7 @@ async function user_POST(title, name, image, mail, phone){
                 body: dataAsJson 
         });
         if (response.ok){
-            mtoast("USER SUCCESSFULLY CREATED");
+            response_message("USER SUCCESSFULLY CREATED");
         }
         else if(!response.ok){
             // show error message and reload page
@@ -363,7 +367,7 @@ async function post_POST(title, body, image){
                 body: dataAsJson 
         });
         if (response.ok){
-            mtoast("POST SUCCESSFULLY CREATED");
+            response_message("POST SUCCESSFULLY CREATED");
         }
         else if(!response.ok){
             // show error message and reload page
@@ -398,7 +402,7 @@ async function deleteData(event) {
             // show confirmation message
             const message = type.slice(0, -1);
             const message_type = message.toUpperCase();
-            mtoast(`${message_type}` + " SUCCESSFULLY DELETED");
+            response_message(`${message_type}` + " SUCCESSFULLY DELETED");
         }
         else if(!response.ok){
             alert("ERROR: error deleting ITEM")

@@ -61,7 +61,7 @@ main {
         grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 }
-@media (min-width: 1500px) {
+@media (min-width: 1600px) {
     .grid-container {
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     }
@@ -129,13 +129,10 @@ input {
     background-color: brown;
     color: black; 
 }
-.show-btn {
-    background-color: rgb(21, 104, 104);
-}
 .hidden{
     display: none;
 }
-#m_toast {
+#response-message {
     /* (A) POSITION */
     position: fixed; z-index: 99999;
     top: 5px; right: 5px;
@@ -146,7 +143,8 @@ input {
    
     /* (C) COLORS */
     border: 1px solid #c52828;
-    background: #ffebe1;
+    background: rgb(167, 235, 140);
     border: 1px solid #000;
-   
+
+    cursor: pointer;
   }
