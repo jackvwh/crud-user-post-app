@@ -129,6 +129,24 @@ input {
     background-color: brown;
     color: black; 
 }
+.show-btn {
+    background-color: rgb(21, 104, 104);
+}
 .hidden{
     display: none;
 }
+#m_toast {
+    /* (A) POSITION */
+    position: fixed; z-index: 99999;
+    top: 5px; right: 5px;
+   
+    /* (B) DIMENSION */
+    width: 200px;
+    padding: 10px;
+   
+    /* (C) COLORS */
+    border: 1px solid #c52828;
+    background: #ffebe1;
+    border: 1px solid #000;
+   
+  }

@@ -2,8 +2,6 @@
 
 /*
     ------ TODO ------
-
-    implement "toast" messsages for update, create and delete
     
     implement search function - name, titel, mail, phone 
 
@@ -12,6 +10,7 @@
     implement validation - how to make uid?? 
 
     remember to remove html input values
+
 */
 const endpoint = "https://crud-app-kea-default-rtdb.firebaseio.com";
 
@@ -43,6 +42,9 @@ async function initApp(){
     
       // add hidden class to USER CREATE btn
     document.querySelector("#user-create-btn").classList.add("hidden");
+
+    // add eventListener to toast message
+    document.querySelector("#m_toast").addEventListener("click", function(){this.classList.add("hidden")});
 }
 //iterate data array and show items
 async function iterateData(type){
@@ -63,6 +65,12 @@ async function loadData(type){
     const dataArray = prepareDataArray(data);
     return dataArray;
 }
+// show toast message 
+function mtoast(msg) {
+    const toast = document.getElementById("m_toast");
+    toast.innerHTML = msg;
+    toast.classList.remove("hidden");
+  }
 //make Json object to object array
 function prepareDataArray(dataObject){
     const dataArray = [];
@@ -83,7 +91,7 @@ function makeHTMLpost(dataItem){
                 <button class="update-btn">Update Post</button>
                 <button class="delete-btn">Delete Post</button>
                 <button class="hide-btn">Hide Post</button>
-                <button class="show-btn hidden">Show Post</button>
+                <button class="show-btn autofocus hidden">Show Post</button>
         </article>
     `;
     return html;
@@ -273,8 +281,7 @@ const response = await fetch(`${endpoint}/users/${id}.json`,
             body: dataAsJson 
     });
     if (response.ok){
-        console.log("USER Updated succesfully");
-        // make "toast" message
+        mtoast("USER SUCCESSFULLY CREATED");
     }
     else if(!response.ok){
         // show error message and reload page
@@ -299,8 +306,7 @@ const response = await fetch(`${endpoint}/posts/${id}.json`,
             body: dataAsJson 
     });
     if (response.ok){
-        console.log("Updated POST succesfully");
-        // make "toast" message
+        mtoast("POST SUCCESSFULLY UPDATED");
     }
     else if(!response.ok){
         // show error message and reload page
@@ -327,8 +333,7 @@ async function user_POST(title, name, image, mail, phone){
                 body: dataAsJson 
         });
         if (response.ok){
-            console.log("CREATED USER succesfully");
-            // make "toast" message
+            mtoast("USER SUCCESSFULLY CREATED");
         }
         else if(!response.ok){
             // show error message and reload page
@@ -358,8 +363,7 @@ async function post_POST(title, body, image){
                 body: dataAsJson 
         });
         if (response.ok){
-            console.log("CREATED POST succesfully");
-            // make "toast" message
+            mtoast("POST SUCCESSFULLY CREATED");
         }
         else if(!response.ok){
             // show error message and reload page
@@ -378,28 +382,6 @@ async function fetchItem(id, type){
     const response =  await fetch(`${endpoint}/${type}/${id}.json`);
     const updatedData = await response.json();
     return updatedData;
-}
-//hide object information
-function hide_item(){
-    // get item children elements
-    const elements = this.parentElement.children;
-    //add hidden class to all children elements except last (.show-btn)
-    for (let i = (elements.length -1); i >= 0; i--){
-        elements[i].classList.add("hidden");    
-    }
-    // remove hidden
-    elements[elements.length-1].classList.remove("hidden");
-}
-//reveal object information
-function reveal_item(){
-    // get children elements from html
-    const elements = this.parentElement.children;
-    //remove hidden class from all children elements except last (.show-btn)
-    for (let i = (elements.length -1); i >= 0; i--){
-        elements[i].classList.remove("hidden");    
-    }
-    // add .hidden to show-btn again
-    elements[elements.length -1].classList.add("hidden");
 }
 //deletes item from database
 async function deleteData(event) {
@@ -484,4 +466,26 @@ async function insertNewItem(id, type){
     console.log("inserting new item");
     const newItem = await fetchItem(id, type);
     displayItem(newItem, type);
+}
+//hide object information
+function hide_item(){
+    // get item children elements
+    const elements = this.parentElement.children;
+    //add hidden class to all children elements except last (.show-btn)
+    for (let i = (elements.length -1); i >= 0; i--){
+        elements[i].classList.add("hidden");    
+    }
+    // remove hidden
+    elements[elements.length-1].classList.remove("hidden");
+}
+//reveal object information
+function reveal_item(){
+    // get children elements from html
+    const elements = this.parentElement.children;
+    //remove hidden class from all children elements except last (.show-btn)
+    for (let i = (elements.length -1); i >= 0; i--){
+        elements[i].classList.remove("hidden");    
+    }
+    // add .hidden to show-btn again
+    elements[elements.length -1].classList.add("hidden");
 }
