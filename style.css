@@ -84,7 +84,7 @@ main {
     height: 300px;
     object-fit: cover;
 }
-/* input form and dialog stryling */
+/* input form and dialog styling */
 dialog {
     border-color: red;
     background-color: rgb(141, 10, 158);

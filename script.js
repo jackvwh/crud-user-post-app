@@ -395,6 +395,10 @@ async function deleteData(event) {
             // delete item locally
             const element_to_delete = find_item_by_data_id(id);
             element_to_delete.remove();
+            // show confirmation message
+            const message = type.slice(0, -1);
+            const message_type = message.toUpperCase();
+            mtoast(`${message_type}` + " SUCCESSFULLY DELETED");
         }
         else if(!response.ok){
             alert("ERROR: error deleting ITEM")
