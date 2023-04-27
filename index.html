@@ -21,10 +21,28 @@
             <button id="post-create-btn" class="post-btn">NEW Post</button>
             <button id="user-create-btn" class="user-btn">NEW User</button>
          </section>
+        
     </header>
 
     <main>   
-        <!-- toast message -->
+
+        
+     <section class="tools-grid">
+         <!-- SEARCH INPUT -->
+            <input type="search" id="search-input" placeholder="SEARCH by TITLE or BODY">
+            <button id="search-btn">Search</button>
+         <!-- SORT BY SELECTION -->
+        <section id="sort-selecting" class="hidden">
+            <label for="sort_choice">[A-Z] Sort by:</label>
+                <select id="sort_choice">
+                    <option value="title">Title</option>
+                    <option value="first-name">First name</option>
+                    <option value="last-name">Last name</option>
+                </select> 
+        </section>
+    </section>
+
+        <!-- response message -->
         <div id="response-message" class="hidden"></div>
 
         <!-- container for data items -->
@@ -72,7 +90,7 @@
                 <input type="text" name="image" id="user-image" maxlength="1000" placeholder="Image" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400" required>
 
                 <label for="user-mail">Mail</label>
-                <input type="text" name="mail" id="user-mail" maxlength="1000" placeholder="Mail" value="president@myhouse.com" required>
+                <input type="email" name="mail" id="user-mail" maxlength="1000" placeholder="Mail" value="president@myhouse.com" required>
 
                 <label for="user-phone">Phone</label>
                 <input type="text" name="phone" id="user-phone" maxlength="1000" placeholder="phone" value="numbers, not a string" required>
@@ -114,7 +132,7 @@
                 <input type="text" name="image" id="user-image" maxlength="1000" placeholder="Image" value="https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400" required>
 
                 <label for="user-mail">Mail</label>
-                <input type="text" name="mail" id="user-mail" maxlength="1000" placeholder="Mail" value="president@myhouse.com" required>
+                <input type="email" name="mail" id="user-mail" maxlength="1000" placeholder="Mail" value="president@myhouse.com" required>
 
                 <label for="user-phone">Phone</label>
                 <input type="text" name="phone" id="user-phone" maxlength="1000" placeholder="phone" value="numbers, not a string" required>

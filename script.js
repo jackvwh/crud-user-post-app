@@ -11,7 +11,10 @@
 
     remember to remove html input values
 
+    maybe make element attribute "title" to "data-type" for better readability
+
 */
+
 const endpoint = "https://crud-app-kea-default-rtdb.firebaseio.com";
 
 window.addEventListener("load", initApp);
@@ -24,8 +27,8 @@ async function initApp(){
     iterateData("posts");
 
     // add eventListener to SHOW ALL USER and SHOW ALL POSTS btns to change create btn
-    document.querySelector("#users-btn").addEventListener("click", change_create_btn);
-    document.querySelector("#posts-btn").addEventListener("click", change_create_btn);
+    document.querySelector("#users-btn").addEventListener("click", change_UI);
+    document.querySelector("#posts-btn").addEventListener("click", change_UI);
 
      //make eventListener for calling either post OR user data --- the ONLY empty function calls
     document.querySelector("#posts-btn").addEventListener("click", function(){iterateData("posts")});
@@ -44,6 +47,9 @@ async function initApp(){
     
       // add hidden class to USER CREATE btn
     document.querySelector("#user-create-btn").classList.add("hidden");
+
+    // add eventListener to search btn 
+    document.querySelector("#search-btn").addEventListener("click", search_data);
 
     // add eventListener to toast message
     document.querySelector("#response-message").addEventListener("click", function(){this.classList.add("hidden")});
@@ -67,56 +73,45 @@ async function loadData(type){
     const dataArray = prepareDataArray(data);
     return dataArray;
 }
-// show reponse message to user 
-function response_message(msg) {
-    const message_element = document.getElementById("response-message");
-    message_element.innerHTML = msg;
-    message_element.classList.remove("hidden");
-    // automatically remove toast message if user doesn´t click it
-    setTimeout(function(){message_element.classList.add("hidden")}, 2000);
-}
-//make Json object to object array
-function prepareDataArray(dataObject){
-    const dataArray = [];
-    for (let key in dataObject){
-        const post = dataObject[key];
-        post.id = key;
-        dataArray.push(post)
+//search data 
+async function search_data(){
+    // search INPUT string
+    const searchInput = document.querySelector("#search-input").value;
+    // clear search input field
+    document.querySelector("#search-input").value = "";
+
+    // make Regular Expression search VALUE 
+    const searchValue = new RegExp(`${searchInput}`, "i")
+    
+    /******-------- FETCH DB DATA ---------********/
+    //get data type from first element
+    const type = document.querySelector(".grid-container").children[0].title;  
+    // get data to search
+    const dataArray = await loadData(type);
+
+
+    // ------------ SEARCH WITH FILTER -----------------
+    const search_results = dataArray.filter(search_item);
+    // search json object properties
+    function search_item(dataItem){
+        for (let key in dataItem){
+            if (searchValue.test(dataItem[key])){
+                return dataItem;
+            }  
+        }  
+    }  
+    // SHOW search result if any
+    if (search_results.length >= 1){
+        //empty grid-container
+        document.querySelector("#items").innerHTML = ""; 
+        // iterate array and show items
+        for (let dataItem of search_results) {
+            displayItem(dataItem, type);
+        }
     }
-    return dataArray;
-}
-//returns HTML post element
-function makeHTMLpost(dataItem){
-    const html = /*HTML*/ `
-        <article class="grid-item" data-id=${dataItem.id} title="posts">
-                <h1 class="title">${dataItem.title}</h1>
-                <img class="image" src="${dataItem.image}">
-                <h1 class="body">${dataItem.body}</h1>
-                <button class="update-btn">Update Post</button>
-                <button class="delete-btn">Delete Post</button>
-                <button class="hide-btn">Hide Post</button>
-                <button class="show-btn autofocus hidden">Show Post</button>
-        </article>
-    `;
-    return html;
-}
-//returns HTML user element
-function makeHTMLuser(dataItem){ 
-    //make for users object
-    const html = /*HTML*/ `
-        <article class="grid-item" data-id=${dataItem.id} title="users">
-                <img class="image" src="${dataItem.image}">
-                <h1 class="user_name">${dataItem.name}</h1>
-                <h1 class="user_title">${dataItem.title}</h1>
-                <h1 class="user_mail">${dataItem.mail}</h1>
-                <h1 class="user_phone">${dataItem.phone}</h1>
-                <button class="update-btn">Update User</button>
-                <button class="delete-btn">Delete User</button>
-                <button class="hide-btn">Hide User</button>
-                <button class="show-btn hidden">Show User</button>
-        </article>
-    `;
-    return html;
+    else {
+        response_message("NO SEARCH RESULTS");
+    }
 }
 //display single item - add eventListeners - controls deleteClicked, user_updateClicked, post_updateCLicked
 function displayItem(dataItem, type){
@@ -186,6 +181,49 @@ function displayItem(dataItem, type){
         document.querySelector("#post-update-dialog").showModal();
     }
 }
+//convert Json object to object array
+function prepareDataArray(dataObject){
+    const dataArray = [];
+    for (let key in dataObject){
+        const post = dataObject[key];
+        post.id = key;
+        dataArray.push(post)
+    }
+    return dataArray;
+}
+//returns HTML post element
+function makeHTMLpost(dataItem){
+    const html = /*HTML*/ `
+        <article class="grid-item" data-id=${dataItem.id} title="posts">
+                <h1 class="title">${dataItem.title}</h1>
+                <img class="image" src="${dataItem.image}">
+                <h1 class="body">${dataItem.body}</h1>
+                <button class="update-btn">Update Post</button>
+                <button class="delete-btn">Delete Post</button>
+                <button class="hide-btn">Hide Post</button>
+                <button class="show-btn autofocus hidden">Show Post</button>
+        </article>
+    `;
+    return html;
+}
+//returns HTML user element
+function makeHTMLuser(dataItem){ 
+    //make for users object
+    const html = /*HTML*/ `
+        <article class="grid-item" data-id=${dataItem.id} title="users">
+                <img class="image" src="${dataItem.image}">
+                <h1 class="user_name">${dataItem.name}</h1>
+                <h1 class="user_title">${dataItem.title}</h1>
+                <h1 class="user_mail">${dataItem.mail}</h1>
+                <h1 class="user_phone">${dataItem.phone}</h1>
+                <button class="update-btn">Update User</button>
+                <button class="delete-btn">Delete User</button>
+                <button class="hide-btn">Hide User</button>
+                <button class="show-btn hidden">Show User</button>
+        </article>
+    `;
+    return html;
+}
 //find and return html element
 function find_item_by_data_id(id){
     // get all items currently displayed 
@@ -221,11 +259,6 @@ async function updateData(event){
         const phone = elements.phone.value;
         //update database with updated values
         user_PUT(title, name, image, mail, phone, id);
-
-        // change old nodes to updated info
-        const nodes_to_update = find_item_by_data_id(id).childNodes;
-        update_USER_info(nodes_to_update);
-
     }
     else if (type === "posts"){
         // get post form inputs
@@ -240,10 +273,6 @@ async function updateData(event){
         const image = elements.image.value;
         //update database with updated values
         post_PUT(title, body , image, id);
-
-        // change old nodes to updated info
-        const nodes_to_update = find_item_by_data_id(id).childNodes;
-        update_POST_info(nodes_to_update);
     }
 }
 //replace old post node values to updated values 
@@ -286,11 +315,13 @@ const response = await fetch(`${endpoint}/users/${id}.json`,
     });
     if (response.ok){
         response_message("USER SUCCESSFULLY UPDATED");
+        // change old nodes to updated info
+        const nodes_to_update = find_item_by_data_id(id).childNodes;
+        update_USER_info(nodes_to_update);
     }
     else if(!response.ok){
         // show error message and reload page
         alert("ERROR: USER Update NOT succesfull ");
-        iterateData("users");
     }
 }
 //make post object and PUT to database
@@ -311,11 +342,13 @@ const response = await fetch(`${endpoint}/posts/${id}.json`,
     });
     if (response.ok){
         response_message("POST SUCCESSFULLY UPDATED");
+         // change old nodes to updated info
+         const nodes_to_update = find_item_by_data_id(id).childNodes;
+         update_POST_info(nodes_to_update);
     }
     else if(!response.ok){
         // show error message and reload page
         alert("ERROR: POST Update NOT succesfull ");
-        iterateData("posts");
     }
 }
 //make USER object and POST to database
@@ -391,7 +424,7 @@ async function fetchItem(id, type){
 async function deleteData(event) {
     //get values to id item to delete in database
     const id = event.target.getAttribute("data-id");
-    const type = event.target.getAttribute("title"); //data type WEIRD I KNOW sry
+    const type = event.target.getAttribute("title"); //data type (posts/users) WEIRD I KNOW sry
     // delete item globally
     const url = `${endpoint}/${type}/${id}.json`;
     const response = await fetch(url, { method: "DELETE" });
@@ -408,17 +441,33 @@ async function deleteData(event) {
             alert("ERROR: error deleting ITEM")
         }
 }
-//change create btn to show create USER or create POST
-function change_create_btn(){
+//change UI --- change create-btn, sort options, search placeholder
+function change_UI(){
     const btn = this;
     //show or hide create-btn
     if (btn.id === "users-btn"){ 
+        // hide post-create-btn and show user-create-btn
         document.querySelector("#post-create-btn").classList.add("hidden");
         document.querySelector("#user-create-btn").classList.remove("hidden");
+
+        //search placeholder for users
+        document.querySelector("#search-input").setAttribute("placeholder", 
+        "SEARCH by TITLE, NAME or MAIL");
+
+         // show sort select for users
+         document.querySelector("#sort-selecting").classList.remove("hidden");
     }
     else if (btn.id === "posts-btn"){
+        // hide user-create-btn and show post-create-btn
         document.querySelector("#post-create-btn").classList.remove("hidden");
         document.querySelector("#user-create-btn").classList.add("hidden");
+        
+        //search placeholder for posts
+        document.querySelector("#search-input").setAttribute("placeholder", "SEARCH by TITLE or BODY");
+
+        // hide sort select for users
+        document.querySelector("#sort-selecting").classList.add("hidden");
+
     }
 }
 //open POST create dialog
@@ -474,6 +523,14 @@ async function insertNewItem(id, type){
     console.log("inserting new item");
     const newItem = await fetchItem(id, type);
     displayItem(newItem, type);
+}
+// show reponse message to user 
+function response_message(msg) {
+    const message_element = document.getElementById("response-message");
+    message_element.innerHTML = msg;
+    message_element.classList.remove("hidden");
+    // automatically remove toast message if user doesn´t click it
+    setTimeout(function(){message_element.classList.add("hidden")}, 2000);
 }
 //hide object information
 function hide_item(){

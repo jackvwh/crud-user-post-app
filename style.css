@@ -142,9 +142,31 @@ input {
     padding: 10px;
    
     /* (C) COLORS */
+    color: #000 !important;
     border: 1px solid #c52828;
     background: rgb(167, 235, 140);
     border: 1px solid #000;
 
     cursor: pointer;
   }
+/* ---------- tools grid styling ---------- */
+
+.tools-grid {
+    background-color: var(--light-grey);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1em;
+    padding: 1em;
+    justify-items: stretch;
+}
+
+@media (min-width: 600px) {
+    .tools-grid {
+        grid-template-columns: auto auto;
+        margin: 1em auto;
+    }
+}
+
+.tools-grid label {
+    max-width: 350px;
+}
