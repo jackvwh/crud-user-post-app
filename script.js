@@ -225,7 +225,7 @@ function makeHTMLuser(dataItem){
     return html;
 }
 //find and return html element
-function find_item_by_data_id(id){
+function find_html_element_by_id(id){
     // get all items currently displayed 
     const items = document.getElementsByClassName("grid-item");
         // iterate and check id and return element with matching id
@@ -316,7 +316,7 @@ const response = await fetch(`${endpoint}/users/${id}.json`,
     if (response.ok){
         response_message("USER SUCCESSFULLY UPDATED");
         // change old nodes to updated info
-        const nodes_to_update = find_item_by_data_id(id).childNodes;
+        const nodes_to_update = find_html_element_by_id(id).childNodes;
         update_USER_info(nodes_to_update);
     }
     else if(!response.ok){
@@ -343,7 +343,7 @@ const response = await fetch(`${endpoint}/posts/${id}.json`,
     if (response.ok){
         response_message("POST SUCCESSFULLY UPDATED");
          // change old nodes to updated info
-         const nodes_to_update = find_item_by_data_id(id).childNodes;
+         const nodes_to_update = find_html_element_by_id(id).childNodes;
          update_POST_info(nodes_to_update);
     }
     else if(!response.ok){
@@ -430,7 +430,7 @@ async function deleteData(event) {
     const response = await fetch(url, { method: "DELETE" });
         if (response.ok){
             // delete item locally
-            const element_to_delete = find_item_by_data_id(id);
+            const element_to_delete = find_html_element_by_id(id);
             element_to_delete.remove();
             // show confirmation message
             const message = type.slice(0, -1);
@@ -452,7 +452,7 @@ function change_UI(){
 
         //search placeholder for users
         document.querySelector("#search-input").setAttribute("placeholder", 
-        "SEARCH by TITLE, NAME or MAIL");
+        "SEARCH by Full/Partial TITLE, NAME or MAIL");
 
          // show sort select for users
          document.querySelector("#sort-selecting").classList.remove("hidden");
@@ -463,11 +463,10 @@ function change_UI(){
         document.querySelector("#user-create-btn").classList.add("hidden");
         
         //search placeholder for posts
-        document.querySelector("#search-input").setAttribute("placeholder", "SEARCH by TITLE or BODY");
+        document.querySelector("#search-input").setAttribute("placeholder", "SEARCH by Full/Partial TITLE or BODY");
 
         // hide sort select for users
         document.querySelector("#sort-selecting").classList.add("hidden");
-
     }
 }
 //open POST create dialog
