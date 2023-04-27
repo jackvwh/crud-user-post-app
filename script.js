@@ -3,15 +3,11 @@
 /*
     ------ TODO ------
     
-    implement search function - name, titel, mail, phone 
-
     implement sort() function
 
     implement validation - how to make uid?? 
 
-    remember to remove html input values
-
-    maybe make element attribute "title" to "data-type" for better readability
+    MAYBE replace html element attribute "title" to "data-type" for better readability
 
 */
 
@@ -73,6 +69,16 @@ async function loadData(type){
     const dataArray = prepareDataArray(data);
     return dataArray;
 }
+//convert Json object to object array
+function prepareDataArray(dataObject){
+    const dataArray = [];
+    for (let key in dataObject){
+        const post = dataObject[key];
+        post.id = key;
+        dataArray.push(post)
+    }
+    return dataArray;
+}
 //search data 
 async function search_data(){
     // search INPUT string
@@ -80,19 +86,18 @@ async function search_data(){
     // clear search input field
     document.querySelector("#search-input").value = "";
 
-    // make Regular Expression search VALUE 
+    // make Regular Expression search VALUE - i for case insensetiv
     const searchValue = new RegExp(`${searchInput}`, "i")
     
-    /******-------- FETCH DB DATA ---------********/
+    // ---------- FETCH DB DATA --------- 
     //get data type from first element
     const type = document.querySelector(".grid-container").children[0].title;  
     // get data to search
     const dataArray = await loadData(type);
 
-
     // ------------ SEARCH WITH FILTER -----------------
     const search_results = dataArray.filter(search_item);
-    // search json object properties
+    // filter search json object properties 
     function search_item(dataItem){
         for (let key in dataItem){
             if (searchValue.test(dataItem[key])){
@@ -108,6 +113,7 @@ async function search_data(){
         for (let dataItem of search_results) {
             displayItem(dataItem, type);
         }
+        response_message("SHOWING RESULTS FOR\n ----> " + `${searchInput}`.toLocaleUpperCase());
     }
     else {
         response_message("NO SEARCH RESULTS");
@@ -180,16 +186,6 @@ function displayItem(dataItem, type){
         //open modal
         document.querySelector("#post-update-dialog").showModal();
     }
-}
-//convert Json object to object array
-function prepareDataArray(dataObject){
-    const dataArray = [];
-    for (let key in dataObject){
-        const post = dataObject[key];
-        post.id = key;
-        dataArray.push(post)
-    }
-    return dataArray;
 }
 //returns HTML post element
 function makeHTMLpost(dataItem){
