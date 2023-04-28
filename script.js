@@ -2,7 +2,6 @@
 
 /*
     ------ TODO ------
-
     
     implement sort() function
 
@@ -10,15 +9,15 @@
 
     MAYBE replace html element attribute "title" to "data-type" for better readability
 
-    MAYBE make dataArray global so search/sort fetch is not necessesary
+    MAYBE make dataArray global so search/sort FETCH is not necessesary and  make "keyup" event possible
 
 */
-
+const items = [];
 const endpoint = "https://crud-app-kea-default-rtdb.firebaseio.com";
 
 window.addEventListener("load", initApp);
 
-//initialise application 
+// initialise application 
 async function initApp(){
     console.log("Starting");
 
@@ -47,27 +46,34 @@ async function initApp(){
       // add hidden class to USER CREATE btn
     document.querySelector("#user-create-btn").classList.add("hidden");
 
-    // add eventListener to search btn 
+    // add eventListener to search
     document.querySelector("#search-btn").addEventListener("click", search_data);
+    document.querySelector("#search-input").addEventListener("keyup", search_data);
 
     // add eventListener to toast message
     document.querySelector("#response-message").addEventListener("click", function(){this.classList.add("hidden")});
 }
-//iterate data array and show items
+// iterate data array and show items
 async function iterateData(type){
     // fetch json from database
     const dataArray = await loadData(type);
+
+    // reset global array items[] for new item data
+    items.splice(0, dataArray.length)
     //empty grid-container
     document.querySelector("#items").innerHTML = "";
+
     // iterate array and show items
-    for (let dataItem of dataArray) {
-        displayItem(dataItem, type);
+    for (let i = 0; i < dataArray.length; i++){
+        displayItem(dataArray[i], type);
+        // push item to global array items[] for later use
+        items[i] =  dataArray[i];
     }
 }
 
 // --------------------------- FETCH/LOAD DATA FUNCTIONS -------------
 
-//fetch all items with async/await
+// fetch all items with async/await
 async function loadData(type){
     console.log("loading data with async/await");
     const response = await fetch(`${endpoint}/${type}.json`);    
@@ -75,7 +81,7 @@ async function loadData(type){
     const dataArray = prepareDataArray(data);
     return dataArray;
 }
-//convert Json object to object array
+// convert Json object to object array
 function prepareDataArray(dataObject){
     const dataArray = [];
     for (let key in dataObject){
@@ -85,9 +91,7 @@ function prepareDataArray(dataObject){
     }
     return dataArray;
 }
-
-
-//fetch single item from database
+// fetch single item from database
 async function fetchItem(id, type){
     //get updated or new item from database
     const response =  await fetch(`${endpoint}/${type}/${id}.json`);
@@ -97,25 +101,22 @@ async function fetchItem(id, type){
 
 // --------------------------- SEARCH / SORT FUNCTIONS --------------------
 
-//search data 
+// search data 
 async function search_data(){
     // search INPUT string
     const searchInput = document.querySelector("#search-input").value;
     // clear search input field
-    document.querySelector("#search-input").value = "";
+    // document.querySelector("#search-input").value = "";
 
     // make Regular Expression search VALUE - i for case insensetiv
     const searchValue = new RegExp(`${searchInput}`, "i")
     
-    // ---------- FETCH DB DATA --------- 
-    //get data type from first element
+    //get data-type from first html element title attribute
     const type = document.querySelector(".grid-container").children[0].title;  
-    // get data to search
-    const dataArray = await loadData(type);
 
-    // ------------ SEARCH WITH FILTER -----------------
-    const search_results = dataArray.filter(search_item);
-    // filter search json object properties 
+    // ------------ SEARCH WITH .FILTER() FROM GLOBAL ARRAY items[] -----------------
+    const search_results = items.filter(search_item);
+    // search through json object properties 
     function search_item(dataItem){
         for (let key in dataItem){
             if (searchValue.test(dataItem[key])){
@@ -131,13 +132,14 @@ async function search_data(){
         for (let dataItem of search_results) {
             displayItem(dataItem, type);
         }
-        response_message("SEARCH RESULTS FOR ---> " + `${searchInput}`.toLocaleUpperCase());
+        // NOT ACTIVE WITH "KEYUP" EVENT
+        // response_message("SEARCH RESULTS FOR ---> " + `${searchInput}`.toLocaleUpperCase());
     }
     else {
         response_message("NO SEARCH RESULTS");
     }
 }
-//find and return html element
+// find and return html element
 function find_html_element_by_id(id){
     // get all items currently displayed 
     const items = document.getElementsByClassName("grid-item");
@@ -148,6 +150,10 @@ function find_html_element_by_id(id){
                 return html_element;
             }
         }
+}
+// sort data by title, firstname or lastname
+function sort_data(choice){
+
 }
 
 // ------------------------------ DISPLAY DATA FUNCTIONS ---------------------
@@ -241,8 +247,8 @@ function makeHTMLuser(dataItem){
     const html = /*HTML*/ `
         <article class="grid-item" data-id=${dataItem.id} title="users">
                 <img class="image" src="${dataItem.image}">
-                <h1 class="user_name">${dataItem.name}</h1>
                 <h1 class="user_title">${dataItem.title}</h1>
+                <h1 class="user_name">${dataItem.name}</h1>
                 <h1 class="user_mail">${dataItem.mail}</h1>
                 <h1 class="user_phone">${dataItem.phone}</h1>
                 <button class="update-btn">Update User</button>
@@ -285,6 +291,9 @@ const response = await fetch(`${endpoint}/users/${id}.json`,
         // change old nodes to updated info
         const nodes_to_update = find_html_element_by_id(id).childNodes;
         update_USER_info(nodes_to_update);
+
+        //reset form
+        document.querySelector("#user-update-form").reset();
     }
     else if(!response.ok){
         // show error message and reload page
@@ -312,6 +321,8 @@ const response = await fetch(`${endpoint}/posts/${id}.json`,
          // change old nodes to updated info
          const nodes_to_update = find_html_element_by_id(id).childNodes;
          update_POST_info(nodes_to_update);
+         //reset form
+         document.querySelector("#post-update-form").reset();
     }
     else if(!response.ok){
         // show error message
@@ -349,8 +360,7 @@ async function updateData(event){
     if (type === "users"){
         // get user form inputs
         const elements = document.querySelector("#user-update-form");
-         //reset form
-        document.querySelector("#user-update-form").reset();
+
         //Close modal
         document.querySelector("#user-update-dialog").close();
         // updated user values to insert in DOM
@@ -365,8 +375,7 @@ async function updateData(event){
     else if (type === "posts"){
         // get post form inputs
         const elements = document.querySelector("#post-update-form");
-         //reset form
-        document.querySelector("#post-update-form").reset();
+         
         //Close modal
         document.querySelector("#post-update-dialog").close();
         // updated post values to insert in DOM
@@ -495,6 +504,7 @@ async function post_POST(title, body, image){
 }
 
 // ------------------------------ DELETE FUNCTIONS -------------------
+
 //deletes item from database
 async function deleteData(event) {
     //get values to id item to delete in database
