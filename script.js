@@ -2,6 +2,8 @@
 
 /*
     ------ TODO ------
+
+    create doesnt work WTF!
     
     implement sort() function
 
@@ -61,7 +63,10 @@ async function iterateData(type){
         displayItem(dataItem, type);
     }
 }
-//fetch with async/await
+
+// --------------------------- FETCH/LOAD DATA FUNCTIONS -------------
+
+//fetch all items with async/await
 async function loadData(type){
     console.log("loading data with async/await");
     const response = await fetch(`${endpoint}/${type}.json`);    
@@ -79,6 +84,16 @@ function prepareDataArray(dataObject){
     }
     return dataArray;
 }
+//fetch single item from database
+async function fetchItem(id, type){
+    //get updated or new item from database
+    const response =  await fetch(`${endpoint}/${type}/${id}.json`);
+    const updatedData = await response.json();
+    return updatedData;
+}
+
+// --------------------------- SEARCH / SORT FUNCTIONS --------------------
+
 //search data 
 async function search_data(){
     // search INPUT string
@@ -113,12 +128,27 @@ async function search_data(){
         for (let dataItem of search_results) {
             displayItem(dataItem, type);
         }
-        response_message("SHOWING RESULTS FOR\n ----> " + `${searchInput}`.toLocaleUpperCase());
+        response_message("SEARCH RESULTS FOR ---> " + `${searchInput}`.toLocaleUpperCase());
     }
     else {
         response_message("NO SEARCH RESULTS");
     }
 }
+//find and return html element
+function find_html_element_by_id(id){
+    // get all items currently displayed 
+    const items = document.getElementsByClassName("grid-item");
+        // iterate and check id and return element with matching id
+        for (let i = 0; i < items.length; i++){
+            if (items[i].getAttribute("data-id") === id){
+                const html_element = items[i];
+                return html_element;
+            }
+        }
+}
+
+// ------------------------------ DISPLAY DATA FUNCTIONS ---------------------
+
 //display single item - add eventListeners - controls deleteClicked, user_updateClicked, post_updateCLicked
 function displayItem(dataItem, type){
     // check for what HTML element to create and insert
@@ -220,77 +250,15 @@ function makeHTMLuser(dataItem){
     `;
     return html;
 }
-//find and return html element
-function find_html_element_by_id(id){
-    // get all items currently displayed 
-    const items = document.getElementsByClassName("grid-item");
-        // iterate and check id and return element with matching id
-        for (let i = 0; i < items.length; i++){
-            if (items[i].getAttribute("data-id") === id){
-                const html_element = items[i];
-                return html_element;
-            }
-        }
+//fetch and insert new item
+async function insertNewItem(id, type){
+    console.log("inserting new item");
+    const newItem = await fetchItem(id, type);
+    displayItem(newItem, type);
 }
-//update data in database
-async function updateData(event){
-    event.preventDefault();
-    //values for identification
-    const form = event.target;
-    const id = form.getAttribute("data-id");
-    const type = form.getAttribute("title"); // data type to update murder me
- 
-    if (type === "users"){
-        // get user form inputs
-        const elements = document.querySelector("#user-update-form");
-         //reset form
-        document.querySelector("#user-update-form").reset();
-        //Close modal
-        document.querySelector("#user-update-dialog").close();
-        // updated user values to insert in DOM
-        const title = elements.title.value;
-        const name = elements.name.value;
-        const image = elements.image.value;
-        const mail = elements.mail.value;
-        const phone = elements.phone.value;
-        //update database with updated values
-        user_PUT(title, name, image, mail, phone, id);
-    }
-    else if (type === "posts"){
-        // get post form inputs
-        const elements = document.querySelector("#post-update-form");
-         //reset form
-        document.querySelector("#post-update-form").reset();
-        //Close modal
-        document.querySelector("#post-update-dialog").close();
-        // updated post values to insert in DOM
-        const title = elements.title.value;
-        const body = elements.body.value;
-        const image = elements.image.value;
-        //update database with updated values
-        post_PUT(title, body , image, id);
-    }
-}
-//replace old post node values to updated values 
-function update_POST_info(oldNodes){
-    // get form inputs values
-    const elements = document.querySelector("#post-update-form");
-    // change specific old nodes to updated values
-    oldNodes[1].innerHTML = elements.title.value;
-    oldNodes[3].src = elements.image.value;
-    oldNodes[5].innerHTML = elements.body.value;  
-}
-//replace old user node values to updated values 
-function update_USER_info(oldNodes){
-    // get form inputs values
-    const elements = document.querySelector("#user-update-form");
-    // change specific old nodes to updated values
-    oldNodes[1].src = elements.image.value;
-    oldNodes[3].innerHTML = elements.title.value;
-    oldNodes[5].innerHTML = elements.name.value;  
-    oldNodes[7].innerHTML = elements.mail.value;  
-    oldNodes[9].innerHTML = elements.phone.value;  
-}
+
+//------------------------------- UPDATE FUNCTIONS ----------------
+
 //make user object and PUT to database
 async function user_PUT(title, name, image, mail, phone, id){
     //create new object
@@ -343,9 +311,123 @@ const response = await fetch(`${endpoint}/posts/${id}.json`,
          update_POST_info(nodes_to_update);
     }
     else if(!response.ok){
-        // show error message and reload page
+        // show error message
         alert("ERROR: POST Update NOT succesfull ");
     }
+}
+//replace old post node values to updated values 
+function update_POST_info(oldNodes){
+    // get form inputs values
+    const elements = document.querySelector("#post-update-form");
+    // change specific old nodes to updated values
+    oldNodes[1].innerHTML = elements.title.value;
+    oldNodes[3].src = elements.image.value;
+    oldNodes[5].innerHTML = elements.body.value;  
+}
+//replace old user node values to updated values 
+function update_USER_info(oldNodes){
+    // get form inputs values
+    const elements = document.querySelector("#user-update-form");
+    // change specific old nodes to updated values
+    oldNodes[1].src = elements.image.value;
+    oldNodes[3].innerHTML = elements.title.value;
+    oldNodes[5].innerHTML = elements.name.value;  
+    oldNodes[7].innerHTML = elements.mail.value;  
+    oldNodes[9].innerHTML = elements.phone.value;  
+}
+//update data in database
+async function updateData(event){
+    event.preventDefault();
+    //values for identification
+    const form = event.target;
+    const id = form.getAttribute("data-id");
+    const type = form.getAttribute("title"); // data type to update murder me
+ 
+    if (type === "users"){
+        // get user form inputs
+        const elements = document.querySelector("#user-update-form");
+         //reset form
+        document.querySelector("#user-update-form").reset();
+        //Close modal
+        document.querySelector("#user-update-dialog").close();
+        // updated user values to insert in DOM
+        const title = elements.title.value;
+        const name = elements.name.value;
+        const image = elements.image.value;
+        const mail = elements.mail.value;
+        const phone = elements.phone.value;
+        //update database with updated values
+        user_PUT(title, name, image, mail, phone, id);
+    }
+    else if (type === "posts"){
+        // get post form inputs
+        const elements = document.querySelector("#post-update-form");
+         //reset form
+        document.querySelector("#post-update-form").reset();
+        //Close modal
+        document.querySelector("#post-update-dialog").close();
+        // updated post values to insert in DOM
+        const title = elements.title.value;
+        const body = elements.body.value;
+        const image = elements.image.value;
+        //update database with updated values
+        post_PUT(title, body , image, id);
+    }
+}
+
+//-------------------------------- CREATE FUNCTIONS --------------
+
+//open POST create dialog
+function post_createDialog(){
+    document.querySelector("#post-create-dialog").showModal();
+    document.querySelector("#post-create-form").addEventListener("submit", createItem);
+}
+//opens USER create dialog
+function user_createDialog(){
+    document.querySelector("#user-create-dialog").showModal();
+    document.querySelector("#user-create-form").addEventListener("submit", createItem);
+}
+//create item object and fetch to firebase
+function createItem(event){
+    event.preventDefault();
+    const element = this;
+    console.log(event.target.title.value);
+        // decide what to create and send
+        if(element.id === "post-create-form"){
+            // close dialog
+            document.querySelector("#post-create-dialog").close();
+            // remove eventlistener
+            document.querySelector("#post-create-form").removeEventListener("submit", createItem);
+            // post input values
+            const title = event.target.title.value;
+            const image = event.target.image.value;
+            const body = event.target.body.value;
+          
+            post_POST(title, body, image);
+
+            // reset form
+            document.querySelector("#post-create-form").reset();
+        }
+
+        else if (element.id === "user-create-form"){
+            // close dialog
+            document.querySelector("#user-create-dialog").close();
+    
+            // remove eventlistener
+            document.querySelector("#user-create-form").removeEventListener("submit", createItem);
+            
+            // user values
+            const name = event.target.name.value;
+            const title = event.target.title.value;
+            const image = event.target.image.value;
+            const mail = event.target.mail.value;
+            const phone = event.target.phone.value;
+
+            user_POST(title, name, image, mail, phone);
+
+            // reset form
+            document.querySelector("#user-create-form").reset();
+        } 
 }
 //make USER object and POST to database
 async function user_POST(title, name, image, mail, phone){
@@ -371,7 +453,6 @@ async function user_POST(title, name, image, mail, phone){
         else if(!response.ok){
             // show error message and reload page
             alert("ERROR: USER CREATE NOT succesfull ");
-            iterateData("users");
         }
     // response with new object id/name
     const data = await response.json();
@@ -397,25 +478,20 @@ async function post_POST(title, body, image){
         });
         if (response.ok){
             response_message("POST SUCCESSFULLY CREATED");
+             // response with new object id/name
+            const data = await response.json();
+            // make get request to input specific element into DOM from response id
+            insertNewItem(data.name, "posts");
         }
         else if(!response.ok){
-            // show error message and reload page
+            // show error message 
             alert("ERROR: POST CREATE NOT succesfull ");
-            iterateData("posts");
         }
 
-    // response with new object id/name
-    const data = await response.json();
-    // make get request to input specific element into DOM from response id
-    insertNewItem(data.name, "posts");
+   
 }
-//fetch single item from database
-async function fetchItem(id, type){
-    //get updated or new item from database
-    const response =  await fetch(`${endpoint}/${type}/${id}.json`);
-    const updatedData = await response.json();
-    return updatedData;
-}
+
+// ------------------------------ DELETE FUNCTIONS -------------------
 //deletes item from database
 async function deleteData(event) {
     //get values to id item to delete in database
@@ -437,6 +513,9 @@ async function deleteData(event) {
             alert("ERROR: error deleting ITEM")
         }
 }
+
+// --------------------- CHANGE AND RESPONSE FUNCTIONS -------------
+
 //change UI --- change create-btn, sort options, search placeholder
 function change_UI(){
     const btn = this;
@@ -465,60 +544,6 @@ function change_UI(){
         document.querySelector("#sort-selecting").classList.add("hidden");
     }
 }
-//open POST create dialog
-function post_createDialog(){
-    document.querySelector("#post-create-dialog").showModal();
-    document.querySelector("#post-create-form").addEventListener("submit", createItem);
-}
-//opens USER create dialog
-function user_createDialog(){
-    document.querySelector("#user-create-dialog").showModal();
-    document.querySelector("#user-create-form").addEventListener("submit", createItem);
-}
-//create item object and fetch to firebase
-function createItem(event){
-    event.preventDefault();
-    const element = this;
-        // decide what to create and send
-        if(element.id === "post-create-form"){
-            // close dialog
-            document.querySelector("#post-create-dialog").close();
-            // reset form
-            document.querySelector("#post-create-form").reset();
-            // remove eventlistener
-            document.querySelector("#post-create-form").removeEventListener("submit", createItem);
-            // post values
-            const title = event.target.title.value;
-            const image = event.target.image.value;
-            const body = event.target.body.value;
-          
-            post_POST(title, body, image);
-        }
-
-        else if (element.id === "user-create-form"){
-            // close dialog
-            document.querySelector("#user-create-dialog").close();
-             // reset form
-             document.querySelector("#user-create-form").reset();
-            // remove eventlistener
-            document.querySelector("#user-create-form").removeEventListener("submit", createItem);
-            
-            // user values
-            const name = event.target.name.value;
-            const title = event.target.title.value;
-            const image = event.target.image.value;
-            const mail = event.target.mail.value;
-            const phone = event.target.phone.value;
-
-            user_POST(title, name, image, mail, phone);
-        } 
-}
-//fetch and insert new item
-async function insertNewItem(id, type){
-    console.log("inserting new item");
-    const newItem = await fetchItem(id, type);
-    displayItem(newItem, type);
-}
 // show reponse message to user 
 function response_message(msg) {
     const message_element = document.getElementById("response-message");
@@ -527,6 +552,9 @@ function response_message(msg) {
     // automatically remove toast message if user doesn´t click it
     setTimeout(function(){message_element.classList.add("hidden")}, 2000);
 }
+
+// ----------------------- ITEM HIDE / REVEAL FUNCTIONS ------------------ 
+
 //hide object information
 function hide_item(){
     // get item children elements
