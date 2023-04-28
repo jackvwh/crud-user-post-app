@@ -10,7 +10,8 @@
 
     MAYBE replace html element attribute "title" to "data-type" for better readability
 
-    MAYBE make dataArray global so search fetch is not necessesary
+    MAYBE make dataArray global so search/sort fetch is not necessesary
+
 */
 
 const endpoint = "https://crud-app-kea-default-rtdb.firebaseio.com";
@@ -84,7 +85,8 @@ function prepareDataArray(dataObject){
     }
     return dataArray;
 }
-<<<<<<< HEAD
+
+
 //fetch single item from database
 async function fetchItem(id, type){
     //get updated or new item from database
@@ -95,8 +97,6 @@ async function fetchItem(id, type){
 
 // --------------------------- SEARCH / SORT FUNCTIONS --------------------
 
-=======
->>>>>>> 1cced3bd10d7da5b154d7073d772571b58fe2ce8
 //search data 
 async function search_data(){
     // search INPUT string
@@ -131,11 +131,7 @@ async function search_data(){
         for (let dataItem of search_results) {
             displayItem(dataItem, type);
         }
-<<<<<<< HEAD
         response_message("SEARCH RESULTS FOR ---> " + `${searchInput}`.toLocaleUpperCase());
-=======
-        response_message("SHOWING RESULTS FOR\n ----> " + `${searchInput}`.toLocaleUpperCase());
->>>>>>> 1cced3bd10d7da5b154d7073d772571b58fe2ce8
     }
     else {
         response_message("NO SEARCH RESULTS");
