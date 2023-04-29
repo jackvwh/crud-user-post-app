@@ -2,9 +2,7 @@
 
 /*
     ------ TODO ------
-    
-    implement sort() function
-
+   
     implement validation - how to make uid?? 
 
     MAYBE replace html element attribute "title" to "data-type" for better readability
@@ -153,10 +151,8 @@ function find_html_element_by_id(id){
 }
 // sort data by title, firstname or lastname
 function sort_data_by_choice(event){
-    event.preventDefault();
-    console.log("SORTING DATA");
+    // event.preventDefault();
     const choice = event.target.value;
-    console.log("SORT choice: -> ", choice);
 
     //get currently loaded data-type from first html element title attribute
     const type = document.querySelector(".grid-container").children[0].title;  
@@ -197,21 +193,15 @@ function sort_data_by_choice(event){
         }
     }
     // -------------------------------- COMPARE FUNCTIONS ------------------------
-    
+
     function compareTitle(user1, user2) {
         return user1.title.localeCompare(user2.title);
     };
     function compare_firstName(user1, user2) {
-        // split user name to first name only
-        const split_user1 = user1.name.split(" ", 1);
-        const split_user2 = user2.name.split(" ", 1);
-        const user1_firstName = split_user1[0];
-        const user2_firstName = split_user2[0];
-
-        return user1_firstName.localeCompare(user2_firstName);
+        return user1.name.localeCompare(user2.name);
     };
     function compare_lastName(user1, user2) {
-        // split user name to last name only
+        // split and get last name only
         const split_user1 = user1.name.split(" ");
         const split_user2 = user2.name.split(" ");
         const user1_lastName = split_user1.pop();
@@ -596,7 +586,7 @@ async function deleteData(event) {
 
 // --------------------- CHANGE AND RESPONSE FUNCTIONS -------------
 
-//change UI --- change create-btn, sort options, search placeholder
+//change UI --- change create-btn, sort options, search placeholders
 function change_UI(){
     const btn = this;
     //show or hide create-btn
