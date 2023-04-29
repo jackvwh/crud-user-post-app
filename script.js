@@ -9,8 +9,6 @@
 
     MAYBE replace html element attribute "title" to "data-type" for better readability
 
-    MAYBE make dataArray global so search/sort FETCH is not necessesary and  make "keyup" event possible
-
 */
 const items = [];
 const endpoint = "https://crud-app-kea-default-rtdb.firebaseio.com";
@@ -50,6 +48,8 @@ async function initApp(){
     document.querySelector("#search-btn").addEventListener("click", search_data);
     document.querySelector("#search-input").addEventListener("keyup", search_data);
 
+    // add eventListener to sort selection
+    document.querySelector("#sort-selecting").addEventListener("change", sort_data_by_choice);
     // add eventListener to toast message
     document.querySelector("#response-message").addEventListener("click", function(){this.classList.add("hidden")});
 }
@@ -67,7 +67,7 @@ async function iterateData(type){
     for (let i = 0; i < dataArray.length; i++){
         displayItem(dataArray[i], type);
         // push item to global array items[] for later use
-        items[i] =  dataArray[i];
+        items[i] = dataArray[i];
     }
 }
 
@@ -102,16 +102,16 @@ async function fetchItem(id, type){
 // --------------------------- SEARCH / SORT FUNCTIONS --------------------
 
 // search data 
-async function search_data(){
+function search_data(){
     // search INPUT string
     const searchInput = document.querySelector("#search-input").value;
-    // clear search input field
+    // clear search input field ---- DISABLED WHEN "keyup" EVENT ACTIVE
     // document.querySelector("#search-input").value = "";
 
     // make Regular Expression search VALUE - i for case insensetiv
     const searchValue = new RegExp(`${searchInput}`, "i")
     
-    //get data-type from first html element title attribute
+    //get currently loaded data-type from first html element title attribute
     const type = document.querySelector(".grid-container").children[0].title;  
 
     // ------------ SEARCH WITH .FILTER() FROM GLOBAL ARRAY items[] -----------------
@@ -132,7 +132,7 @@ async function search_data(){
         for (let dataItem of search_results) {
             displayItem(dataItem, type);
         }
-        // NOT ACTIVE WITH "KEYUP" EVENT
+        // ----------------------- NOT ACTIVE WHEN "KEYUP" EVENT IS ACTIVE -------------------
         // response_message("SEARCH RESULTS FOR ---> " + `${searchInput}`.toLocaleUpperCase());
     }
     else {
@@ -152,8 +152,72 @@ function find_html_element_by_id(id){
         }
 }
 // sort data by title, firstname or lastname
-function sort_data(choice){
+function sort_data_by_choice(event){
+    event.preventDefault();
+    console.log("SORTING DATA");
+    const choice = event.target.value;
+    console.log("SORT choice: -> ", choice);
 
+    //get currently loaded data-type from first html element title attribute
+    const type = document.querySelector(".grid-container").children[0].title;  
+
+    if (choice === "title"){
+        items.sort(compareTitle);
+        //reverse array for displaying correctly since I add html with first-child and beforebegin
+        items.reverse();
+        //empty grid-container
+        document.querySelector("#items").innerHTML = ""; 
+        // iterate array and show items
+        for (let dataItem of items) {
+            displayItem(dataItem, type);
+        }
+    }
+    else if (choice === "first-name"){
+        // sort items array by first name
+        items.sort(compare_firstName);
+        //reverse array for displaying correctly since I add html with first-child and beforebegin
+        items.reverse();
+        //empty grid-container
+        document.querySelector("#items").innerHTML = ""; 
+        // iterate array and show items
+        for (let dataItem of items) {
+            displayItem(dataItem, type);
+        }
+    }
+    else if (choice === "last-name"){
+        // sort items array by first name
+        items.sort(compare_lastName);
+        //reverse array for displaying correctly since I add html with first-child and beforebegin
+        items.reverse();
+        //empty grid-container
+        document.querySelector("#items").innerHTML = ""; 
+        // iterate array and show items
+        for (let dataItem of items) {
+            displayItem(dataItem, type);
+        }
+    }
+    // -------------------------------- COMPARE FUNCTIONS ------------------------
+    
+    function compareTitle(user1, user2) {
+        return user1.title.localeCompare(user2.title);
+    };
+    function compare_firstName(user1, user2) {
+        // split user name to first name only
+        const split_user1 = user1.name.split(" ", 1);
+        const split_user2 = user2.name.split(" ", 1);
+        const user1_firstName = split_user1[0];
+        const user2_firstName = split_user2[0];
+
+        return user1_firstName.localeCompare(user2_firstName);
+    };
+    function compare_lastName(user1, user2) {
+        // split user name to last name only
+        const split_user1 = user1.name.split(" ");
+        const split_user2 = user2.name.split(" ");
+        const user1_lastName = split_user1.pop();
+        const user2_lastName = split_user2.pop();
+        return user1_lastName.localeCompare(user2_lastName);
+    };
 }
 
 // ------------------------------ DISPLAY DATA FUNCTIONS ---------------------
@@ -178,7 +242,10 @@ function displayItem(dataItem, type){
             document.querySelector("#items article:first-child .hide-btn").addEventListener("click", hide_item);
             document.querySelector("#items article:first-child .show-btn").addEventListener("click", reveal_item);
 
-        };
+        }
+        else {
+            alert("------------> DATA ERROR <-----------");
+        }
         // add eventListener to delete btn
         document.querySelector("#items article:first-child .delete-btn").addEventListener("click", deleteClicked);
         

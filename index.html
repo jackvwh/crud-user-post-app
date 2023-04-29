@@ -32,14 +32,15 @@
             <button id="search-btn">Search</button>
 
             <!-- SORT BY SELECTION -->
-            <section id="sort-selecting" class="hidden">
+            <form id="sort-selecting" class="hidden">
                 <label for="sort_choice">[A-Z] Sort by:</label>
-                    <select id="sort_choice">
+                    <select id="sort_choice" name="sort_choice">
+                        <option value="none" selected>None</option>
                         <option value="title">Title</option>
                         <option value="first-name">First name</option>
                         <option value="last-name">Last name</option>
                     </select> 
-            </section>
+            </form>
     </section>
 
         <!-- response message -->
