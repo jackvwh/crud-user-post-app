@@ -3,8 +3,6 @@
 /*
     ------ TODO ------
    
-    implement validation - how to make uid?? 
-
     MAYBE replace html element attribute "title" to "data-type" for better readability
 
 */
@@ -13,9 +11,8 @@ const endpoint = "https://crud-app-kea-default-rtdb.firebaseio.com";
 
 window.addEventListener("load", initApp);
 
-// initialise application 
+//initialise application 
 async function initApp(){
-    console.log("Starting");
 
     // fetch and iterate json array and show items
     iterateData("posts");
@@ -39,9 +36,6 @@ async function initApp(){
      // add eventListener to delete-btn dialog
      document.querySelector("#form-delete").addEventListener("submit", deleteData);
     
-      // add hidden class to USER CREATE btn
-    document.querySelector("#user-create-btn").classList.add("hidden");
-
     // add eventListener to search
     document.querySelector("#search-btn").addEventListener("click", search_data);
     document.querySelector("#search-input").addEventListener("keyup", search_data);
@@ -50,6 +44,11 @@ async function initApp(){
     document.querySelector("#sort-selecting").addEventListener("change", sort_data_by_choice);
     // add eventListener to toast message
     document.querySelector("#response-message").addEventListener("click", function(){this.classList.add("hidden")});
+
+    
+      // add hidden class to USER CREATE btn
+      document.querySelector("#user-create-btn").classList.add("hidden");
+
 }
 // iterate data array and show items
 async function iterateData(type){
@@ -70,10 +69,8 @@ async function iterateData(type){
 }
 
 // --------------------------- FETCH/LOAD DATA FUNCTIONS -------------
-
 // fetch all items with async/await
 async function loadData(type){
-    console.log("loading data with async/await");
     const response = await fetch(`${endpoint}/${type}.json`);    
     const data = await response.json();
     const dataArray = prepareDataArray(data);
@@ -98,7 +95,6 @@ async function fetchItem(id, type){
 }
 
 // --------------------------- SEARCH / SORT FUNCTIONS --------------------
-
 // search data 
 function search_data(){
     // search INPUT string
@@ -114,14 +110,14 @@ function search_data(){
 
     // ------------ SEARCH WITH .FILTER() FROM GLOBAL ARRAY items[] -----------------
     const search_results = items.filter(search_item);
-    // search through json object properties 
-    function search_item(dataItem){
-        for (let key in dataItem){
-            if (searchValue.test(dataItem[key])){
-                return dataItem;
+        // search through json object properties 
+        function search_item(dataItem){
+            for (let key in dataItem){
+                if (searchValue.test(dataItem[key])){
+                    return dataItem;
+                }  
             }  
         }  
-    }  
     // SHOW search result if any
     if (search_results.length >= 1){
         //empty grid-container
@@ -211,7 +207,6 @@ function sort_data_by_choice(event){
 }
 
 // ------------------------------ DISPLAY DATA FUNCTIONS ---------------------
-
 //display single item - add eventListeners - controls deleteClicked, user_updateClicked, post_updateCLicked
 function displayItem(dataItem, type){
     // check for what HTML element to create and insert
@@ -318,13 +313,11 @@ function makeHTMLuser(dataItem){
 }
 //fetch and insert new item
 async function insertNewItem(id, type){
-    console.log("inserting new item");
     const newItem = await fetchItem(id, type);
     displayItem(newItem, type);
 }
 
 //------------------------------- UPDATE FUNCTIONS ----------------
-
 //make user object and PUT to database
 async function user_PUT(title, name, image, mail, phone, id){
     //create new object
@@ -345,8 +338,9 @@ const response = await fetch(`${endpoint}/users/${id}.json`,
     });
     if (response.ok){
         response_message("USER SUCCESSFULLY UPDATED");
-        // change old nodes to updated info
-        const nodes_to_update = find_html_element_by_id(id).childNodes;
+       // find element nodes to update
+       const nodes_to_update = find_html_element_by_id(id).childNodes;
+       // change old nodes to updated info
         update_USER_info(nodes_to_update);
 
         //reset form
@@ -375,8 +369,9 @@ const response = await fetch(`${endpoint}/posts/${id}.json`,
     });
     if (response.ok){
         response_message("POST SUCCESSFULLY UPDATED");
-         // change old nodes to updated info
+         // find element nodes to update
          const nodes_to_update = find_html_element_by_id(id).childNodes;
+         // change old nodes to updated info
          update_POST_info(nodes_to_update);
          //reset form
          document.querySelector("#post-update-form").reset();
@@ -445,7 +440,6 @@ async function updateData(event){
 }
 
 //-------------------------------- CREATE FUNCTIONS --------------
-
 //open POST create dialog
 function post_createDialog(){
     document.querySelector("#post-create-dialog").showModal();
@@ -460,7 +454,6 @@ function user_createDialog(){
 function createItem(event){
     event.preventDefault();
     const element = this;
-    console.log(event.target.title.value);
         // decide what to create and send
         if(element.id === "post-create-form"){
             // close dialog
@@ -561,7 +554,6 @@ async function post_POST(title, body, image){
 }
 
 // ------------------------------ DELETE FUNCTIONS -------------------
-
 //deletes item from database
 async function deleteData(event) {
     //get values to id item to delete in database
@@ -574,7 +566,7 @@ async function deleteData(event) {
             // delete item locally
             const element_to_delete = find_html_element_by_id(id);
             element_to_delete.remove();
-            // show confirmation message
+            // show confirmation message with data type
             const message = type.slice(0, -1);
             const message_type = message.toUpperCase();
             response_message(`${message_type}` + " SUCCESSFULLY DELETED");
@@ -585,7 +577,6 @@ async function deleteData(event) {
 }
 
 // --------------------- CHANGE AND RESPONSE FUNCTIONS -------------
-
 //change UI --- change create-btn, sort options, search placeholders
 function change_UI(){
     const btn = this;
@@ -621,10 +612,9 @@ function response_message(msg) {
     message_element.classList.remove("hidden");
     // automatically remove toast message if user doesn´t click it
     setTimeout(function(){message_element.classList.add("hidden")}, 2000);
-}
+}   
 
 // ----------------------- ITEM HIDE / REVEAL FUNCTIONS ------------------ 
-
 //hide object information
 function hide_item(){
     // get item children elements
@@ -633,7 +623,7 @@ function hide_item(){
     for (let i = (elements.length -1); i >= 0; i--){
         elements[i].classList.add("hidden");    
     }
-    // remove hidden
+    // remove hidden from show-btn
     elements[elements.length-1].classList.remove("hidden");
 }
 //reveal object information
