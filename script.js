@@ -2,7 +2,7 @@
 
 /*    ------ TODO ------
    
-    MAYBE replace html element attribute "title" to "data-type" for better readability
+    MAYBE replace html element attribute "title" to "data-type" for better readability -- TOO MANY FUNCTIONS TO CHANGE
 
 FOR TESTING: 
 https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400
@@ -31,9 +31,9 @@ function add_eventListeners(){
     document.querySelector("#users-btn").addEventListener("click", change_UI);
     document.querySelector("#posts-btn").addEventListener("click", change_UI);
 
-     //make eventListener for calling either post OR user data --- the ONLY empty function calls
-    document.querySelector("#posts-btn").addEventListener("click", function(){iterateData("posts")});
-    document.querySelector("#users-btn").addEventListener("click", function(){iterateData("users")});
+     //make eventListener for calling either post OR user data
+    document.querySelector("#posts-btn").addEventListener("click", () => iterateData("posts"));
+    document.querySelector("#users-btn").addEventListener("click", () => iterateData("users"));
 
     // add eventlistener to update submit forms 
      document.querySelector("#post-update-form").addEventListener("submit", updateData);
@@ -52,7 +52,7 @@ function add_eventListeners(){
     // add eventListener to sort selection
     document.querySelector("#sort-selecting").addEventListener("change", sort_data_by_choice);
     // add eventListener to toast message
-    document.querySelector("#response-message").addEventListener("click", function(){this.classList.add("hidden")});
+    document.querySelector("#response-message").addEventListener("click", () => this.classList.add("hidden"));
 }
 // iterate data array and show items
 async function iterateData(type){
