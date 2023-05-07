@@ -27,12 +27,15 @@
     <main>   
   
     <section class="tools-grid">
-            <!-- SEARCH INPUT -->
+        <!-- SEARCH INPUT -->
+        <section class="search">
+            <label for="search-input">Search</label>
             <input type="search" id="search-input" placeholder="SEARCH by Full/Partial TITLE or BODY">
-            <button id="search-btn">Search</button>
+        </section>
 
-            <!-- SORT BY SELECTION -->
-            <form id="sort-selecting" class="hidden">
+        <!-- SORT BY SELECTION -->
+        <section id="sort-selecting" class="hidden">
+            <form class="sort">
                 <label for="sort_choice">[A-Z] Sort by:</label>
                     <select id="sort_choice" name="sort_choice">
                         <option value="none" selected>None</option>
@@ -41,6 +44,7 @@
                         <option value="last-name">Last name</option>
                     </select> 
             </form>
+        </section>
     </section>
 
         <!-- response message -->

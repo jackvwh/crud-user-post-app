@@ -40,7 +40,6 @@ async function initApp(){
      document.querySelector("#form-delete").addEventListener("submit", deleteData);
     
     // add eventListener to search
-    document.querySelector("#search-btn").addEventListener("click", search_data);
     document.querySelector("#search-input").addEventListener("keyup", search_data);
 
     // add eventListener to sort selection
@@ -49,8 +48,8 @@ async function initApp(){
     document.querySelector("#response-message").addEventListener("click", function(){this.classList.add("hidden")});
 
     
-      // add hidden class to USER CREATE btn
-      document.querySelector("#user-create-btn").classList.add("hidden");
+    // add hidden class to USER CREATE btn
+    document.querySelector("#user-create-btn").classList.add("hidden");
 
 }
 // iterate data array and show items
