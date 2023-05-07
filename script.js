@@ -615,7 +615,7 @@ function response_message(msg) {
     message_element.innerHTML = msg;
     message_element.classList.remove("hidden");
     // automatically remove toast message if user doesn´t click it
-    setTimeout(function(){message_element.classList.add("hidden")}, 5000);
+    setTimeout(function(){message_element.classList.add("hidden")}, 7000);
 }   
 
 // ----------------------- ITEM HIDE / REVEAL FUNCTIONS ------------------ 
