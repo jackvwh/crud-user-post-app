@@ -239,15 +239,15 @@ function displayItem(dataItem, type){
         document.querySelector("#items article:first-child .delete-btn").addEventListener("click", deleteClicked);
         
     function deleteClicked(){
-        // get title value to indicate TYPE of data to delete
+        // get title attribute value from html element to indicate TYPE of data to delete - should be data-type attribute instead
         const type = this.parentElement.title;
+        // show title in delete dialog
         document.querySelector("#dialog-delete-title").textContent = dataItem.title;
         // set attributes values for further identification
         document.querySelector("#form-delete").setAttribute("title", type);
         document.querySelector("#form-delete").setAttribute("data-id", dataItem.id);
         //open modal
         document.querySelector("#dialog-delete").showModal();
-
     }
     function user_updateClicked(){
           // get title value to indicate TYPE of data to update
@@ -292,7 +292,7 @@ function makeHTMLpost(dataItem){
                 <button class="update-btn">Update Post</button>
                 <button class="delete-btn">Delete Post</button>
                 <button class="hide-btn">Hide Post</button>
-                <button class="show-btn autofocus hidden">Show Post</button>
+                <button class="show-btn hidden">Show Post</button>
         </article>
     `;
     return html;
