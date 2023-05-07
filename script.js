@@ -1,9 +1,12 @@
 "use strict"
 
-/*
-    ------ TODO ------
+/*    ------ TODO ------
    
     MAYBE replace html element attribute "title" to "data-type" for better readability
+
+FOR TESTING: 
+https://images.unsplash.com/photo-1642049888276-9c9f0a1a8758?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyOTA4MTB8MHwxfGFsbHwyfHx8fHx8Mnx8MTY0MjA3NTAwMQ&ixlib=rb-1.2.1&q=80&w=400
+something@mail.com
 
 */
 const items = [];
@@ -56,7 +59,7 @@ async function iterateData(type){
     const dataArray = await loadData(type);
 
     // reset global array items[] for new item data
-    items.splice(0, dataArray.length)
+    items.splice(0, items.length)
     //empty grid-container
     document.querySelector("#items").innerHTML = "";
 
@@ -401,7 +404,7 @@ function update_USER_info(oldNodes){
     oldNodes[7].innerHTML = elements.mail.value;  
     oldNodes[9].innerHTML = elements.phone.value;  
 }
-//update data in database
+//get update values and update data in database
 async function updateData(event){
     event.preventDefault();
     //values for identification
@@ -450,11 +453,11 @@ function user_createDialog(){
     document.querySelector("#user-create-dialog").showModal();
     document.querySelector("#user-create-form").addEventListener("submit", createItem);
 }
-//create item object and fetch to firebase
+// get create dialog values 
 function createItem(event){
     event.preventDefault();
     const element = this;
-        // decide what to create and send
+        // decide what values to get and send and reset form
         if(element.id === "post-create-form"){
             // close dialog
             document.querySelector("#post-create-dialog").close();
@@ -567,8 +570,8 @@ async function deleteData(event) {
             const element_to_delete = find_html_element_by_id(id);
             element_to_delete.remove();
             // show confirmation message with data type
-            const message = type.slice(0, -1);
-            const message_type = message.toUpperCase();
+            const deleted_type = type.slice(0, -1);
+            const message_type = deleted_type.toUpperCase();
             response_message(`${message_type}` + " SUCCESSFULLY DELETED");
         }
         else if(!response.ok){
@@ -611,7 +614,7 @@ function response_message(msg) {
     message_element.innerHTML = msg;
     message_element.classList.remove("hidden");
     // automatically remove toast message if user doesn´t click it
-    setTimeout(function(){message_element.classList.add("hidden")}, 2000);
+    setTimeout(function(){message_element.classList.add("hidden")}, 5000);
 }   
 
 // ----------------------- ITEM HIDE / REVEAL FUNCTIONS ------------------ 
