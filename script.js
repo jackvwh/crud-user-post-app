@@ -20,6 +20,13 @@ async function initApp(){
     // fetch and iterate json array and show items
     iterateData("posts");
 
+    add_eventListeners();
+    
+    // add hidden class to USER CREATE btn
+    document.querySelector("#user-create-btn").classList.add("hidden");
+
+}
+function add_eventListeners(){
     // add eventListener to SHOW ALL USER and SHOW ALL POSTS btns to change create btn
     document.querySelector("#users-btn").addEventListener("click", change_UI);
     document.querySelector("#posts-btn").addEventListener("click", change_UI);
@@ -46,11 +53,6 @@ async function initApp(){
     document.querySelector("#sort-selecting").addEventListener("change", sort_data_by_choice);
     // add eventListener to toast message
     document.querySelector("#response-message").addEventListener("click", function(){this.classList.add("hidden")});
-
-    
-    // add hidden class to USER CREATE btn
-    document.querySelector("#user-create-btn").classList.add("hidden");
-
 }
 // iterate data array and show items
 async function iterateData(type){
